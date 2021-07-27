@@ -1,5 +1,4 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -8,19 +7,17 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
 import RTMClient from '../rtm-client';
+import ChattingUsersAndMessage from '../subcomponents/chattingUsersAndMessage';
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
   chatSection: {
-    width: '100%',
-    height: '80vh'
+    width: '30vw',
+    height: '100%'
   },
   headBG: {
       backgroundColor: '#e0e0e0'
@@ -36,9 +33,12 @@ const useStyles = makeStyles({
 
 const Chat = (props) => {
   const classes = useStyles();
-
+  const [chattingMessage, setChattingMessage] = useState('')
   const [messageStorage, setMessageStorage] = useState([]);
+  const [userStorage, setUserStorage] = useState([]);
   const [location, setLocation] = useState(["right"]);
+
+  const currentDate = new Date();
   
   const localClient = useMemo(() => {
     const client = new RTMClient();
@@ -51,16 +51,24 @@ const Chat = (props) => {
   }, [localClient])
 
   const onSendMessage = () => {
-    const message = document.getElementById("chattingMessage").value;
 
-    localClient.sendChannelMessage(message, props.channelName).then((e) => {
+    localClient.sendChannelMessage(chattingMessage, props.channelName).then(() => {
+        setChattingMessage('')
+
         if(location[location.length - 1] == "right"){
             setLocation([...location, "left"])
         }else{
             setLocation([...location, "right"])
         }
-        setMessageStorage([...messageStorage, message]);
+        setMessageStorage([...messageStorage, chattingMessage]);
+        setUserStorage([...userStorage, props.userName]);
     })
+  }
+
+  const onChattingMessage = (e) => {
+      e.preventDefault();
+
+      setChattingMessage(e.currentTarget.value)
   }
 
   localClient.on('ConnectionStateChanged', (newState, reason) => {
@@ -80,7 +88,8 @@ const Chat = (props) => {
   })
 
   localClient.on('ChannelMessage', async ({ channelName, args }) => {
-      const message = args[0].text;  
+      const message = args[0].text;
+      const user = args[1];  
 
       if(location[location.length - 1] == "right"){
           setLocation([...location, "left"])
@@ -88,66 +97,30 @@ const Chat = (props) => {
           setLocation([...location, "right"])
       }
       setMessageStorage([...messageStorage, message]);
+      setUserStorage([...userStorage, user]);
   })
 
   return (
-      <div>
-        <Grid container>
-            <Grid item xs={12} >
-                <Typography variant="h5" className="header-message">Chat</Typography>
-            </Grid>
-        </Grid>
+      <>
         <Grid container component={Paper} className={classes.chatSection}>
-            <Grid item xs={3} className={classes.borderRight500}>
-                <List>
-                    <ListItem button key="RemySharp">
-                        <ListItemIcon>
-                        <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="John Wick"></ListItemText>
-                    </ListItem>
-                </List>
-                <Divider />
-                <Grid item xs={12} style={{padding: '10px'}}>
-                    <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth />
-                </Grid>
-                <Divider />
-                <List>
-                    <ListItem button key="RemySharp">
-                        <ListItemIcon>
-                            <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="Remy Sharp">Remy Sharp</ListItemText>
-                        <ListItemText secondary="online" align="right"></ListItemText>
-                    </ListItem>
-                </List>
-            </Grid>
             <Grid item xs={9}>
                 <List className={classes.messageArea}>
                     {messageStorage.length ?
                         messageStorage.map((message, index) => {
                             return (
                                 <ListItem key={index}>
-                                    <Grid container>
-                                        <Grid item xs={12}>
-                                            <ListItemText align={location[index]}>{message}</ListItemText>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <ListItemText align={location[index]} secondary="09:30"></ListItemText>
-                                        </Grid>
-                                    </Grid>
+                                    <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} messageTime="09:30" />
                                 </ListItem>
                             )
                         })
                         :
                         <></>
                     }
-                    
                 </List>
                 <Divider />
-                <Grid container style={{padding: '20px'}}>
+                <Grid container>
                     <Grid item xs={11}>
-                        <TextField id="chattingMessage" label="Type Something" fullWidth />
+                        <TextField label="Type Something" fullWidth onChange={onChattingMessage} value={chattingMessage} />
                     </Grid>
                     <Grid xs={1} align="right">
                         <Fab color="primary" aria-label="add" onClick={onSendMessage}>Send</Fab>
@@ -155,7 +128,7 @@ const Chat = (props) => {
                 </Grid>
             </Grid>
         </Grid>
-      </div>
+      </>
   );
 }
 
