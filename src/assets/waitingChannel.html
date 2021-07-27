@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/waitingChannel.css">
+    <script src="../script/main.js"></script>
+    <title>Owake - channel</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row_container">
+            <div id="logo">
+                <h1 class="title">Owake Channel</h1>
+            </div>
+        </div>
+        <div class="video_container">
+            <div class="cam_wrapper" id="cam_display_box">
+
+            </div>
+
+            <div class="cam_setting_wrapper" id="cam_setting_box">
+
+                <div class="setting_container">
+                    <select name="cam" id="select_setting_cam">
+                        <option value="">USB2.0 VGA UVC WebCam (0408:3050)</option>
+                    </select>
+
+                    <select name="audio" id="select_setting_audio">
+                        <option value="">기본값 - Microphone(3-High Definition Audio Device)</option>
+                    </select>
+
+                    <div class="btn_wrapper">
+                        <input type="text" id="displayNameInput" placeholder="Display Name" />
+                        <div id="JoinChannelBtn">Join Channel</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="icon_container">
+            <div class="video_logo">
+                <img src="../img/video_btn.png" alt="">
+                <span>Video</span>
+            </div>
+            <div class="mic_logo">
+                <img src="../img/mic_btn.png" alt="">
+                <span>Audio</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
