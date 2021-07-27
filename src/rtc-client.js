@@ -1,67 +1,91 @@
-import AgoraRTC from 'agora-rtc-sdk-ng'
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
+import AgoraRTC, {
+  IAgoraRTCClient, IAgoraRTCRemoteUser, MicrophoneAudioTrackInitConfig, CameraVideoTrackInitConfig, IMicrophoneAudioTrack, ICameraVideoTrack, ILocalVideoTrack, ILocalAudioTrack } from 'agora-rtc-sdk-ng';
 
-let rtc = {
-    localAudioTrack: null,
-    localVideoTrack: null,
-    screenVideoTrack: null
-};
+export default function RTCClient(client) {
 
-let options = {
-    // Pass your App ID here.
-    appId: process.env.REACT_APP_AGORA_APP_ID,
-    // Set the channel name.
-    channel: "owake",
-    // Pass your temp token here.
-    token: null,
-    // Set the user ID.
-    uid: 0
-};
+  let { channelName, userName } = useParams();
 
+  const [localVideoTrack, setLocalVideoTrack] = useState(undefined);
+  const [localAudioTrack, setLocalAudioTrack] = useState(undefined);
 
-export default class RTCClient {
-    constructor(){
-        this._client = null
-        this._joined = false
-        this._localStream = null
-        this._params = {}
-        this._uid = 0
-        this._showProfile = false
-        this._subscribed = false
-        this._created = false
+  const [joinState, setJoinState] = useState(false);
+
+  const [remoteUsers, setRemoteUsers] = useState([]);
+
+  async function createLocalTracks(audioConfig, videoConfig) {
+    const [microphoneTrack, cameraTrack] = await AgoraRTC.createMicrophoneAndCameraTracks(audioConfig, videoConfig);
+    setLocalAudioTrack(microphoneTrack);
+    setLocalVideoTrack(cameraTrack);
+    return [microphoneTrack, cameraTrack];
+  }
+
+  async function join() {
+    if (!client) return;
+    const [microphoneTrack, cameraTrack] = await createLocalTracks();
+    await client.join(process.env.REACT_APP_AGORA_APP_ID, channelName, null);
+    await client.publish([microphoneTrack, cameraTrack]);
+
+    setJoinState(true);
+  }
+
+  async function leave() {
+    if (localAudioTrack) {
+      localAudioTrack.stop();
+      localAudioTrack.close();
     }
-
-    createClient (data) {
-        this._client = AgoraRTC.createClient({ mode: data.mode, codec: data.codec })
-        return this._client
+    if (localVideoTrack) {
+      localVideoTrack.stop();
+      localVideoTrack.close();
     }
+    setRemoteUsers([]);
+    setJoinState(false);
+    await client?.leave();
+  }
 
-    async setClientRole (role) {
-        await this._client.setClientRole(role)
+  useEffect(() => {
+    if (!client) return;
+    join().then(() => {
+        setRemoteUsers(client.remoteUsers);
+    });
+
+    const handleUserPublished = async (user, mediaType) => {
+      await client.subscribe(user, mediaType);
+      // toggle rerender while state of remoteUsers changed.
+
+      setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
-
-    async join () {
-        await this._client.join(options.appId, options.channel, options.token, options.uid)
-        this.createRTCTrack();
+    const handleUserUnpublished = (user) => {
+      setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
-
-    async createRTCTrack () {
-        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-
-        this._client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
-
-        rtc.localVideoTrack.play("local-player")
+    const handleUserJoined = (user) => {
+      setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
-
-    async share(){
-        this.createShareScreenTrack();
+    const handleUserLeft = (user) => {
+      setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
+    client.on('user-published', handleUserPublished);
+    client.on('user-unpublished', handleUserUnpublished);
+    client.on('user-joined', handleUserJoined);
+    client.on('user-left', handleUserLeft);
 
-    async createShareScreenTrack(){
-        rtc.screenVideoTrack = await AgoraRTC.createScreenVideoTrack({encoderConfig: "1080p_1"},"enable");
+    return () => {
+      client.off('user-published', handleUserPublished);
+      client.off('user-unpublished', handleUserUnpublished);
+      client.off('user-joined', handleUserJoined);
+      client.off('user-left', handleUserLeft);
+    };
+  }, [client]);
 
-        this._client.publish(rtc.screenVideoTrack);
-
-
-    }
+  return {
+    localAudioTrack,
+    localVideoTrack,
+    joinState,
+    leave,
+    join,
+    remoteUsers,
+    channelName,
+    userName
+  };
 }

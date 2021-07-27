@@ -43,32 +43,38 @@ export default class RTMClient extends EventEmitter {
     })
   }
 
-  async login (uid, token) {
+  async login (uid, token, channelName) {
     this.accountName = uid
-    return this.client.login({ uid: this.accountName, token})
+    //return await this.client.login({ uid: this.accountName, token})
+    await this.client.login({ uid: this.accountName, token}).then(() => {
+      this._logined = true;
+      this.joinChannel(channelName).then(() => {
+        this.channels[channelName].joined = true;
+      })
+    })
   }
 
   async logout () {
     return this.client.logout()
   }
 
-  async joinChannel (name) {
-    console.log('joinChannel', name)
-    const channel = this.client.createChannel(name)
-    this.channels[name] = {
+  async joinChannel (channelName) {
+    console.log('joinChannel', channelName)
+    const channel = this.client.createChannel(channelName)
+    this.channels[channelName] = {
       channel,
       joined: false // channel state
     }
-    this.subscribeChannelEvents(name)
-    return channel.join()
+    this.subscribeChannelEvents(channelName)
+    return await channel.join()
   }
 
-  async leaveChannel (name) {
-    console.log('leaveChannel', name)
-    if (!this.channels[name] ||
-      (this.channels[name] &&
-        !this.channels[name].joined)) return
-    return this.channels[name].channel.leave()
+  async leaveChannel (channelName) {
+    console.log('leaveChannel', channelName)
+    if (!this.channels[channelName] ||
+      (this.channels[channelName] &&
+        !this.channels[channelName].joined)) return
+    return this.channels[channelName].channel.leave()
   }
 
   async sendChannelMessage (text, channelName) {
