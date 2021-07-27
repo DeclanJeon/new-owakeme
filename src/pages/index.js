@@ -67,7 +67,7 @@ export default function SignIn() {
                         <input id="Name_Your_Channel_input" placeholder="User Name" onChange={onUserName} />
                     </div>
                     <div id="Create_Channel">
-                        <Button onClick={onEnterChanel}>Create Channel</Button>
+                        <Button style={{ width: '35vw', height: '5vh' }} onClick={onEnterChanel}>Create Channel</Button>
                     </div>
                     <div id="Channel_ID_URL">
                         <span>Channel ID or URL</span>
