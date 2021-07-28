@@ -8,6 +8,7 @@ import RTCClient from '../rtc-client';
 import { IonIcon } from '@ionic/react'
 import { clipboardOutline, peopleOutline, chatboxEllipsesOutline, gridOutline, settingsOutline, micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOutline, logOutOutline } from 'ionicons/icons'
 import '../assets/css/channel.css';
+import ChannelUserList from '../components/channelUserList'
 import Chatting from '../components/chatting';
 import useRouter from '../utils/use-router';
 
@@ -48,26 +49,62 @@ const client = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
 const Room = () => {
   const classes = useStyles();
   const routerCtx = useRouter();
-  const [useMic, setUseMic] = useState(false)
-  const [useVideocam, setUseVideocam] = useState(false)
+  const [useMic, setUseMic] = useState(true)
+  const [useVideocam, setUseVideocam] = useState(true)
+  const [useChannelUserListPage, setUseChannelUserListPage] = useState(false)
+  const [useChattingPage, setUseChattingPage] = useState(false)
+  const [usePageGrid, setUsePageGrid] = useState(false)
+  const [useSettingPage, setUseSettingPage] = useState(false)
+
 
   const {
     localAudioTrack, localVideoTrack, leave, join, joinState, remoteUsers, channelName, userName
   } = RTCClient(client);
 
+  debugger;
+  //테스트
+  AgoraRTC.getCameras().then((e) => {
+    console.log(e)
+  }).catch((err) => {
+    console.log(err)
+  })
+
   const onMic = () => {
     setUseMic(!useMic)
-    localAudioTrack.setEnabled(useMic)
+    localAudioTrack.setMuted(useMic)
   }
 
   const onVideocam = () => {
     setUseVideocam(!useVideocam)
-    localVideoTrack.setEnabled(useVideocam)
+    localVideoTrack.setMuted(useVideocam)
   }
 
   const onLeaveChannel = () => {
     leave();
     routerCtx.history.push({ pathname: '/' })
+  }
+
+  const onSelectPage = (pagename) => {
+    switch (pagename) {
+      case 'channelUserList':
+        setUseChannelUserListPage(!useChannelUserListPage)
+      break;
+      case 'chattingPage':
+        setUseChattingPage(!useChattingPage)
+      break;
+      case 'pageGrid':
+        setUsePageGrid(!usePageGrid)
+      break;
+      case 'settingPage':
+        setUseSettingPage(!useSettingPage)
+      break;
+      default:
+        setUseChannelUserListPage(false)
+        setUseChattingPage(false)
+        setUsePageGrid(false)
+        setUseSettingPage(false)
+      break;
+    }
   }
 
   return (
@@ -97,16 +134,15 @@ const Room = () => {
                                 <IonIcon icon={settingsOutline} />
                             </div>
                         </div>
-
+                        
                         <Chatting userName={userName} channelName={channelName} />
+                        
                     </div>
                 </div>
             </div>
             <div class="view_container">
               <Container className={classes.cardGrid} maxWidth="md">
                 {/* End hero unit */}
-                <Grid container spacing={4}>
-                  <Grid item xs={12} sm={6} md={4}>
                     <div>
                       <StreamPlayer audioTrack={localAudioTrack} videoTrack={localVideoTrack} style={{ flex: 1 }} />
                     </div>
@@ -115,16 +151,14 @@ const Room = () => {
                             <StreamPlayer audioTrack={user.audioTrack} videoTrack={user.videoTrack} />
                         </div>
                     ))}
-                  </Grid>
-                </Grid>
               </Container>
             </div>
             <div class="bottom_container">
                 <div class="view_mic">
-                  {!useMic ? <IonIcon icon={micOutline} onClick={onMic} /> : <IonIcon icon={micOffOutline} onClick={onMic} /> }
+                  {useMic ? <IonIcon icon={micOutline} onClick={onMic} /> : <IonIcon icon={micOffOutline} onClick={onMic} /> }
                 </div>
                 <div class="view_video">
-                  {!useVideocam ? <IonIcon icon={videocamOutline} onClick={onVideocam} /> : <IonIcon icon={videocamOffOutline} onClick={onVideocam} /> }
+                  {useVideocam ? <IonIcon icon={videocamOutline} onClick={onVideocam} /> : <IonIcon icon={videocamOffOutline} onClick={onVideocam} /> }
                 </div>
                 <div class="view_share">
                     <IonIcon icon={shareOutline} />

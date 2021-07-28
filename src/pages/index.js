@@ -59,7 +59,6 @@ export default function SignIn() {
 
             <div class="btn_container">
                 <div class="row">
-
                     <div id="Name_Your_Channel">
                         <input id="Name_Your_Channel_input" placeholder="Name Your Channel" onChange={onChanelName} />
                     </div>
