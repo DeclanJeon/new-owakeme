@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useState, useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import StreamPlayer from '../components/streamPlayer';
+import NavBar from '../components/navBar';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import RTCClient from '../rtc-client';
 import { IonIcon } from '@ionic/react'
-import { clipboardOutline, peopleOutline, chatboxEllipsesOutline, gridOutline, settingsOutline, micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOutline, logOutOutline } from 'ionicons/icons'
+import { clipboardOutline, micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOutline, logOutOutline } from 'ionicons/icons'
 import '../assets/css/channel.css';
-import ChannelUserList from '../components/channelUserList'
-import Chatting from '../components/chatting';
 import useRouter from '../utils/use-router';
 
 const useStyles = makeStyles((theme) => ({
@@ -49,98 +49,48 @@ const client = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
 const Room = () => {
   const classes = useStyles();
   const routerCtx = useRouter();
+  const channelName = useSelector(state => state.channelReducer.channelName)
   const [useMic, setUseMic] = useState(true)
   const [useVideocam, setUseVideocam] = useState(true)
-  const [useChannelUserListPage, setUseChannelUserListPage] = useState(false)
-  const [useChattingPage, setUseChattingPage] = useState(false)
-  const [usePageGrid, setUsePageGrid] = useState(false)
-  const [useSettingPage, setUseSettingPage] = useState(false)
-
-
+  
   const {
-    localAudioTrack, localVideoTrack, leave, join, joinState, remoteUsers, channelName, userName
+    localAudioTrack, localVideoTrack, leave, join, remoteUsers
   } = RTCClient(client);
 
-  debugger;
-  //테스트
-  AgoraRTC.getCameras().then((e) => {
-    console.log(e)
-  }).catch((err) => {
-    console.log(err)
-  })
-
-  const onMic = () => {
+  const onMic = useCallback((localAudioTrack) => {
     setUseMic(!useMic)
+    debugger;
     localAudioTrack.setMuted(useMic)
-  }
+  }, [useMic])
 
-  const onVideocam = () => {
+  const onVideocam = useCallback(() => {
     setUseVideocam(!useVideocam)
     localVideoTrack.setMuted(useVideocam)
-  }
+  }, [useVideocam])
 
-  const onLeaveChannel = () => {
+  const onLeaveChannel = useCallback(() => {
     leave();
     routerCtx.history.push({ pathname: '/' })
-  }
-
-  const onSelectPage = (pagename) => {
-    switch (pagename) {
-      case 'channelUserList':
-        setUseChannelUserListPage(!useChannelUserListPage)
-      break;
-      case 'chattingPage':
-        setUseChattingPage(!useChattingPage)
-      break;
-      case 'pageGrid':
-        setUsePageGrid(!usePageGrid)
-      break;
-      case 'settingPage':
-        setUseSettingPage(!useSettingPage)
-      break;
-      default:
-        setUseChannelUserListPage(false)
-        setUseChattingPage(false)
-        setUsePageGrid(false)
-        setUseSettingPage(false)
-      break;
-    }
-  }
+  }, [])
 
   return (
     <>
-        <div class="container">
-            <div class="nav_container">
-                <div class="top_navbar">
-                    <div class="channel_name">
+        <div className="container">
+            <div className="nav_container">
+                <div className="top_navbar">
+                    <div className="channel_name">
                         {channelName}
                     </div>
                     |
-                    <div class="channel_clipboard">                 
+                    <NavBar />
+
+                    <div className="channel_clipboard">                 
                         <IonIcon icon={clipboardOutline} />
                     </div>
-                    <div class="row_nav_container">
-                        <div class="navigaitner">
-                            <div id="connect_user_list">
-                                <IonIcon icon={peopleOutline} />
-                            </div>
-                            <div id="chat">
-                                <IonIcon icon={chatboxEllipsesOutline} />
-                            </div>
-                            <div id="view_grid">
-                                <IonIcon icon={gridOutline} />
-                            </div>
-                            <div id="setting">
-                                <IonIcon icon={settingsOutline} />
-                            </div>
-                        </div>
-                        
-                        <Chatting userName={userName} channelName={channelName} />
-                        
-                    </div>
+                    
                 </div>
             </div>
-            <div class="view_container">
+            <div className="view_container">
               <Container className={classes.cardGrid} maxWidth="md">
                 {/* End hero unit */}
                     <div>
@@ -153,17 +103,17 @@ const Room = () => {
                     ))}
               </Container>
             </div>
-            <div class="bottom_container">
-                <div class="view_mic">
+            <div className="bottom_container">
+                <div className="view_mic">
                   {useMic ? <IonIcon icon={micOutline} onClick={onMic} /> : <IonIcon icon={micOffOutline} onClick={onMic} /> }
                 </div>
-                <div class="view_video">
+                <div className="view_video">
                   {useVideocam ? <IonIcon icon={videocamOutline} onClick={onVideocam} /> : <IonIcon icon={videocamOffOutline} onClick={onVideocam} /> }
                 </div>
-                <div class="view_share">
+                <div className="view_share">
                     <IonIcon icon={shareOutline} />
                 </div>
-                <div class="view_out">
+                <div className="view_out">
                     <IonIcon icon={logOutOutline} onClick={onLeaveChannel} />
                 </div>
             </div>
