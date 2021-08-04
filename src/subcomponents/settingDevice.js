@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
 
-function SettingDevice() {
+const SettingDevice = () => {
     const devices = useSelector(state => state.deviceReducer.deviceList)
     
     return (
@@ -11,7 +11,7 @@ function SettingDevice() {
                 <InputLabel>Video</InputLabel>
                 <Select>
                     {devices.map((obj, index) => {
-                        <MenuItem value={index}>{obj.label}</MenuItem>
+                        return <MenuItem value={index}>{obj.label}</MenuItem>
                     })}
                 </Select>
             </FormControl>
@@ -19,4 +19,4 @@ function SettingDevice() {
     )
 }
 
-export default SettingDevice
+export default React.memo(SettingDevice)

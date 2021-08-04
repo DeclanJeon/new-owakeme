@@ -1,17 +1,11 @@
-import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux'
+import React from 'react';
 import ChannelUserList from '../subcomponents/channelUserList';
 import Chatting from '../subcomponents/chatting';
 import SettingDevice from '../subcomponents/settingDevice';
 import { IonIcon } from '@ionic/react'
 import { peopleOutline, chatboxEllipsesOutline, gridOutline, settingsOutline } from 'ionicons/icons';
 
-function NavBar() {
-
-    const channelName = useSelector(state => state.channelReducer.channelName)
-    const userName = useSelector(state => state.userReducer.userName)
-
-
+const NavBar = () => {
     return (
         <div className="row_nav_container">
             <div className="navigaitner">
@@ -31,7 +25,7 @@ function NavBar() {
             
             {/* <ChannelUserList /> */}
                 
-            {/* <Chatting userName={props.userName} channelName={props.channelName} /> */}
+            {/* <Chatting /> */}
 
             <SettingDevice />
             
@@ -39,4 +33,4 @@ function NavBar() {
     )
 }
 
-export default NavBar
+export default React.memo(NavBar)

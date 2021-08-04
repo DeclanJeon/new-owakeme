@@ -1,7 +1,10 @@
 import React, { useRef, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
-export default function StreamPlayer(props) {
+const StreamPlayer = (props) => {
     const container = useRef(null)
+    const userName = useSelector(state => state.userReducer.userName)
+
     useEffect(() => {
         if (!container.current) return;
         props.videoTrack?.play(container.current);
@@ -21,8 +24,10 @@ export default function StreamPlayer(props) {
     return (
         <>
             <div ref={container} style={{ width: "480px", height: "320px"}}>
-                    
+                {userName}
             </div>
         </>
     )
 }
+
+export default React.memo(StreamPlayer)

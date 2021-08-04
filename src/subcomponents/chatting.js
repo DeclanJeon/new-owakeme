@@ -12,6 +12,7 @@ import Fab from '@material-ui/core/Fab';
 import RTMClient from '../rtm-client';
 import ChattingUsersAndMessage from './chattingUsersAndMessage';
 import { useDropzone } from 'react-dropzone'
+import { Button } from '@material-ui/core';
 
 const useStyles = makeStyles({
   table: {
@@ -33,14 +34,15 @@ const useStyles = makeStyles({
   }
 });
 
-const Chatting = (props) => {
+const Chatting = () => {
   const classes = useStyles();
   const [chattingMessage, setChattingMessage] = useState('')
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
   const [location, setLocation] = useState(["right"]);
 
-  const test = useSelector(state => state.userReducer.userName)
+  const channelName = useSelector(state => state.channelReducer.channelName)
+  const userName = useSelector(state => state.userReducer.userName)
 
   const localClient = useMemo(() => {
     const client = new RTMClient();
@@ -49,43 +51,34 @@ const Chatting = (props) => {
 
   useEffect(() => {
     localClient.init("bccb6064412c4823a4c725e997eb80fa");
-    localClient.login(props.userName, "", props.channelName);
+    localClient.login(userName, "", channelName);
   }, [localClient])
 
   ///////테스트
   const onDrop = useCallback((acceptedFiles) => {
-    debugger;
     acceptedFiles.map((files) => {
-       localClient.sendChannelMediaMessage(files, props.channelName, files).then(() => {
-           alert('파일 업로드 완료')
-       });
+       localClient.sendChannelMediaMessage(files, channelName, files);
     })
   }, [])
   
   const { getRootProps } = useDropzone({ onDrop });
   ////////////
 
-  const onSendMessage = useCallback((e) => {
-    localClient.sendChannelMessage(chattingMessage, props.channelName).then(() => {
+  const onSendMessage = (e) => {
+    localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
         setChattingMessage('')
-
-        /*if(location[location.length - 1] == "right"){
-            setLocation([...location, "left"])
-        }else{
-            setLocation([...location, "right"])
-        }*/
         setLocation([...location, "right"])
 
         setMessageStorage([...messageStorage, chattingMessage]);
-        setUserStorage([...userStorage, props.userName]);
+        setUserStorage([...userStorage, userName]);
     })
-  }, [chattingMessage])
+  }
 
-  const onChattingMessage = useCallback((e) => {
+  const onChattingMessage = (e) => {
       e.preventDefault();
 
       setChattingMessage(e.currentTarget.value)
-  }, [])
+  }
 
   localClient.on('ConnectionStateChanged', (newState, reason) => {
       
@@ -104,21 +97,25 @@ const Chatting = (props) => {
   })
 
   localClient.on('ChannelMessage', async ({ channelName, args }) => {
-      switch (args[0].messageType) {
+      const message = args[0].text;
+      const user = args[1];
+      const messageType = args[0].messageType;
+      const mediaId = args[0].mediaId;
+
+      switch (messageType) {
         case 'IMAGE':
-            localClient.downloadChannelMedia(args[0].mediaId).then((r) => {
+            localClient.downloadChannelMedia(mediaId).then((r) => {
                 console.log(r)
             })
         break;
         case 'FILE':
-
+            localClient.downloadChannelMedia(mediaId).then((r) => {
+                console.log(r)
+            })
         break;
-        default:
-            const message = args[0].text;
-            const user = args[1];  
-
+        default:  
             //if(location[location.length - 1] == "right" && test !== args[1]){
-            if(test !== user){
+            if(userName !== user){
                 setLocation([...location, "left"])
             }else{
                 setLocation([...location, "right"])
@@ -164,4 +161,4 @@ const Chatting = (props) => {
   );
 }
 
-export default Chatting;
+export default React.memo(Chatting);
