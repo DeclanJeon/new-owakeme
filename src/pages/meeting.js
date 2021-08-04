@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -54,24 +54,23 @@ const Room = () => {
   const [useVideocam, setUseVideocam] = useState(true)
   
   const {
-    localAudioTrack, localVideoTrack, leave, join, remoteUsers
+    localAudioTrack, localVideoTrack, leave, remoteUsers
   } = RTCClient(client);
-
-  const onMic = useCallback((localAudioTrack) => {
+  
+  const onMic = () => {
     setUseMic(!useMic)
-    debugger;
     localAudioTrack.setMuted(useMic)
-  }, [useMic])
+  }
 
-  const onVideocam = useCallback(() => {
+  const onVideocam = () => {
     setUseVideocam(!useVideocam)
     localVideoTrack.setMuted(useVideocam)
-  }, [useVideocam])
+  }
 
-  const onLeaveChannel = useCallback(() => {
+  const onLeaveChannel = () => {
     leave();
     routerCtx.history.push({ pathname: '/' })
-  }, [])
+  }
 
   return (
     <>
