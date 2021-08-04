@@ -2,9 +2,8 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { GoogleLogin, GoogleLogout } from 'react-google-login'
 import { userLogIn } from '../reducer/actions/user'
-import useRouter from '../utils/use-router';
 
-function GoogleLoginForm() {
+const GoogleLoginForm = () => {
     const dispatch = useDispatch()
 
     const onGoogleLoginSuccess = (e) => {
@@ -21,4 +20,4 @@ function GoogleLoginForm() {
     )
 }
 
-export default GoogleLoginForm
+export default React.memo(GoogleLoginForm)
