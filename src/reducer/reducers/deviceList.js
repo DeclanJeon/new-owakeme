@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react'
 import { SET_DEVICE_LIST } from '../actions/deviceList'
-import AgoraRTC from 'agora-rtc-sdk-ng'
 
 const initState = {
     deviceList: []
