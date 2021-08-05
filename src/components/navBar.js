@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ChannelUserList from '../subcomponents/channelUserList';
 import Chatting from '../subcomponents/chatting';
 import SettingDevice from '../subcomponents/settingDevice';
@@ -6,6 +6,7 @@ import { IonIcon } from '@ionic/react'
 import { peopleOutline, chatboxEllipsesOutline, gridOutline, settingsOutline } from 'ionicons/icons';
 
 const NavBar = () => {
+
     return (
         <div className="row_nav_container">
             <div className="navigaitner">

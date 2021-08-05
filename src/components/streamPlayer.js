@@ -24,8 +24,9 @@ const StreamPlayer = (props) => {
     return (
         <>
             <div ref={container} style={{ width: "480px", height: "320px"}}>
-                {userName}
+                
             </div>
+            <div>{userName}</div>
         </>
     )
 }
