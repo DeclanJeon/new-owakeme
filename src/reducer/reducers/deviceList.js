@@ -1,7 +1,9 @@
-import { SET_DEVICE_LIST } from '../actions/deviceList'
+import { SET_DEVICE_LIST, SET_CAMERA_ID, SET_AUDIO_ID } from '../actions/deviceList'
 
 const initState = {
-    deviceList: []
+    deviceList: [],
+    cameraId: '',
+    audioId: ''
 }
 
 const deviceReducer = (state = initState, action) => {
@@ -11,6 +13,16 @@ const deviceReducer = (state = initState, action) => {
                 ...state,
                 deviceList: action.deviceList
             };
+        case SET_CAMERA_ID:
+            return {
+                ...state,
+                cameraId: action.cameraId
+            }
+        case SET_AUDIO_ID:
+            return {
+                ...state,
+                audioId: action.audioId
+            }
         default:
             return state;
     }
