@@ -17,11 +17,11 @@ const SettingDevice = () => {
     const dispatch = useDispatch();
     
     const selectVideo = useCallback((e) => {
-        dispatch(setCameraId(e.value))
+        dispatch(setCameraId(e.target.value))
     }, [])
 
     const selectAudio = useCallback((e) => {
-        dispatch(setAudioId(e.value))
+        dispatch(setAudioId(e.target.value))
     }, [])
 
     return (
@@ -33,7 +33,7 @@ const SettingDevice = () => {
                 >
                     {devices.map((obj) => {
                         if(obj.kind === 'videoinput'){
-                            return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.deviceId}</MenuItem>
+                            return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
                         }
                     })}
                 </Select>
