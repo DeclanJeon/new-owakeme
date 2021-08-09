@@ -25,32 +25,36 @@ const SettingDevice = () => {
     }, [])
 
     return (
-        <div>
-            <FormControl className={classes.deviceSection}>
-                <InputLabel>Video</InputLabel>
-                <Select
-                    onChange={selectVideo}
-                >
-                    {devices.map((obj) => {
-                        if(obj.kind === 'videoinput'){
-                            return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
-                        }
-                    })}
-                </Select>
-            </FormControl>
-            <FormControl className={classes.deviceSection}>
-                <InputLabel>Audio</InputLabel>
-                <Select
-                    onChange={selectAudio}
-                >
-                    {devices.map((obj) => {
-                        if(obj.kind === 'audioinput'){
-                            return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
-                        }
-                    })}
-                </Select>
-            </FormControl>
-        </div>
+        <>
+            <div>
+                <FormControl className={classes.deviceSection}>
+                    <InputLabel>Video</InputLabel>
+                    <Select
+                        onChange={selectVideo}
+                    >
+                        {devices.map((obj) => {
+                            if(obj.kind === 'videoinput'){
+                                return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
+                            }
+                        })}
+                    </Select>
+                </FormControl>
+            </div>
+            <div>
+                <FormControl className={classes.deviceSection}>
+                    <InputLabel>Audio</InputLabel>
+                    <Select
+                        onChange={selectAudio}
+                    >
+                        {devices.map((obj) => {
+                            if(obj.kind === 'audioinput'){
+                                return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
+                            }
+                        })}
+                    </Select>
+                </FormControl>
+            </div>
+        </>
     )
 }
 
