@@ -107,14 +107,31 @@ export default class RTMClient extends EventEmitter {
     return this.client.sendMessageToPeer(mediaMessage, peerId)
   }
 
-  async sendChannelMediaMessage (blob, channelName, files) {
-    console.log('sendChannelMessage', blob, channelName)
+  async sendChannelImageMediaMessage (blob, channelName, files) {
+    console.log('sendChannelImageMessage', blob, channelName)
     if (!this.channels[channelName] || !this.channels[channelName].joined) return
+    debugger;
     const mediaMessage = await this.client.createMediaMessageByUploading(blob, {
       messageType: "IMAGE",
       fileName: files.name,
-      description: 'send image',
-      thumbnail: blob, 
+      description: `send ${files.name} image`
+      //thumbnail: blob, 
+      // width: 100,
+      // height: 200,
+      // thumbnailWidth: 50,
+      // thumbnailHeight: 200, 
+    })
+    return this.channels[channelName].channel.sendMessage(mediaMessage)
+  }
+
+  async sendChannelFileMediaMessage (blob, channelName, files) {
+    console.log('sendChannelFileMessage', blob, channelName)
+    if (!this.channels[channelName] || !this.channels[channelName].joined) return
+    const mediaMessage = await this.client.createMediaMessageByUploading(blob, {
+      messageType: "FILE",
+      fileName: files.name,
+      description: `send ${files.name} file`
+      //thumbnail: blob, 
       // width: 100,
       // height: 200,
       // thumbnailWidth: 50,
@@ -135,9 +152,7 @@ export default class RTMClient extends EventEmitter {
   }
 
   async downloadChannelMedia(mediaId){
-    debugger;
-    const blob = await this.client.downloadMedia(mediaId)
-    return blob;
+    return await this.client.downloadMedia(mediaId);
   }
 
 }
