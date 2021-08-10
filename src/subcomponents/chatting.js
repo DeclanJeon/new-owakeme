@@ -11,8 +11,8 @@ import ListItem from '@material-ui/core/ListItem';
 import Fab from '@material-ui/core/Fab';
 import RTMClient from '../rtm-client';
 import ChattingUsersAndMessage from './chattingUsersAndMessage';
-import { useDropzone } from 'react-dropzone'
-import { Button } from '@material-ui/core';
+import Dropzone from 'react-dropzone'
+import { saveAs } from 'file-saver'
 
 const useStyles = makeStyles({
   table: {
@@ -34,12 +34,17 @@ const useStyles = makeStyles({
   }
 });
 
+const IMAGE_FORMAT = "\\.(bmp|gif|jpg|jpeg|png)$";
+
 const Chatting = () => {
   const classes = useStyles();
   const [chattingMessage, setChattingMessage] = useState('')
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
   const [location, setLocation] = useState(["right"]);
+
+  const [filePath, setFilePath] = useState('')
+  
 
   const channelName = useSelector(state => state.channelReducer.channelName)
   const userName = useSelector(state => state.userReducer.userName)
@@ -50,20 +55,28 @@ const Chatting = () => {
   }, [])
 
   useEffect(() => {
-    localClient.init("bccb6064412c4823a4c725e997eb80fa");
+    localClient.init(process.env.REACT_APP_AGORA_APP_ID);
     localClient.login(userName, "", channelName);
   }, [localClient])
 
-  ///////테스트
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.map((files) => {
-       localClient.sendChannelMediaMessage(files, channelName, files);
+       if(new RegExp(IMAGE_FORMAT, "i").test(files.name)){
+            localClient.sendChannelImageMediaMessage(files, channelName, files).then(() => {
+                alert('이미지 업로드 완료')
+            });
+       } else {
+            localClient.sendChannelFileMediaMessage(files, channelName, files).then(() => {
+                alert('파일 업로드 완료')
+            });
+       }
     })
-  }, [])
-  
-  const { getRootProps } = useDropzone({ onDrop });
-  ////////////
+  }, []);
 
+  const onDropRejected = useCallback((error) => {
+    alert(error[0].errors[0].code)
+  }, []);
+  
   const onSendMessage = (e) => {
     localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
         setChattingMessage('')
@@ -74,11 +87,11 @@ const Chatting = () => {
     })
   }
 
-  const onChattingMessage = (e) => {
+  const onChattingMessage = useCallback((e) => {
       e.preventDefault();
 
       setChattingMessage(e.currentTarget.value)
-  }
+  }, [])
 
   localClient.on('ConnectionStateChanged', (newState, reason) => {
       
@@ -98,23 +111,29 @@ const Chatting = () => {
 
   localClient.on('ChannelMessage', async ({ channelName, args }) => {
       const message = args[0].text;
-      const user = args[1];
       const messageType = args[0].messageType;
       const mediaId = args[0].mediaId;
-
+      const fileName = args[0].fileName;
+      const user = args[1];
+      debugger;
       switch (messageType) {
         case 'IMAGE':
             localClient.downloadChannelMedia(mediaId).then((r) => {
-                console.log(r)
+                debugger;
+                //const reader = new FileReader();
+                //reader.readAsDataURL(r);
+                //reader.onload = function(e) {
+                //    setFilePath(e.target.result)
+                //}
+                saveAs(r, fileName)
             })
         break;
         case 'FILE':
             localClient.downloadChannelMedia(mediaId).then((r) => {
-                console.log(r)
+                saveAs(r, fileName)
             })
         break;
         default:  
-            //if(location[location.length - 1] == "right" && test !== args[1]){
             if(userName !== user){
                 setLocation([...location, "left"])
             }else{
@@ -130,21 +149,31 @@ const Chatting = () => {
   return (
       <>
         <Grid container component={Paper} className={classes.chatSection}>
-            <Grid item xs={9}>
+            <Grid item xs={12}>
                 <List className={classes.messageArea}>
-                    <div {...getRootProps()} className={classes.messageArea}>
-                        {messageStorage.length ?
-                            messageStorage.map((message, index) => {
-                                return (
-                                    <ListItem key={index}>
-                                        <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} messageTime="09:30" />
-                                    </ListItem>
-                                )
-                            })
-                        :
-                            <></>
-                        }
-                    </div>
+                    <Dropzone
+                        onDrop={onDrop}
+                        maxSize={32000000}
+                        onDropRejected={onDropRejected}
+                    >
+                        {({getRootProps}) => (
+                            <div {...getRootProps()} className={classes.messageArea}>
+                                {messageStorage.length ?
+                                    messageStorage.map((message, index) => {
+                                        return (
+                                            <ListItem key={index}>
+                                                <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} messageTime="09:30" />
+                                            </ListItem>
+                                        )
+                                    })
+                                :
+                                    <></>
+                                }
+        
+                                {filePath ? <img src={filePath} /> : <></>}
+                            </div>
+                        )}
+                    </Dropzone>
                 </List>
                 <Divider />
                 <Grid container>
