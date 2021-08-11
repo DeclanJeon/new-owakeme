@@ -41,7 +41,7 @@ const Chatting = () => {
   const [chattingMessage, setChattingMessage] = useState('')
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
-  const [location, setLocation] = useState(["right"]);
+  const [location, setLocation] = useState([]);
 
   const [filePath, setFilePath] = useState('')
   
@@ -134,11 +134,7 @@ const Chatting = () => {
             })
         break;
         default:  
-            if(userName !== user){
-                setLocation([...location, "left"])
-            }else{
-                setLocation([...location, "right"])
-            }
+            setLocation([...location, "left"])
             setMessageStorage([...messageStorage, message]);
             setUserStorage([...userStorage, user]);
         break;
