@@ -1,34 +1,35 @@
 import React, { useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-const StreamPlayer = (props) => {
+const StreamPlayer = ({audioTrack, videoTrack, type, uid}) => {
     const container = useRef(null)
     const userName = useSelector(state => state.userReducer.userName)
 
     useEffect(() => {
         if (!container.current) return;
-        props.videoTrack?.play(container.current);
+        videoTrack?.play(container.current);
 
         return () => {
-            props.videoTrack?.stop();
+            videoTrack?.stop();
         };
-    }, [container, props.videoTrack])
+    }, [container, videoTrack])
     useEffect(() => {
-        props.audioTrack?.play();
+        audioTrack?.play();
 
         return () => {
-            props.audioTrack?.stop();
+            audioTrack?.stop();
         };
-    }, [props.audioTrack])
+    }, [audioTrack])
+    
 
     return (
         <>
             <div ref={container} style={{ width: "480px", height: "320px"}}>
                 
             </div>
-            <div>{userName}</div>
+            <div>{type === 'local' ? 'local ' + userName : 'remote ' + uid}</div>
         </>
     )
 }
 
-export default React.memo(StreamPlayer)
+export default StreamPlayer

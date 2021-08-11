@@ -4,20 +4,20 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 
-function chattingUsersAndMessage(props) {
+function chattingUsersAndMessage({location, userId, userMessage, messageTime }) {
     return (
         <>
             <Grid container>
                 <Grid item xs={12}>
-                    <ListItemAvatar align={props.location}>
+                    <ListItemAvatar align={location}>
                         <Avatar>
-                            {props.userId}
+                            {userId}
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText align={props.location}>{props.userMessage}</ListItemText>
+                    <ListItemText align={location}>{userMessage}</ListItemText>
                 </Grid>
                 <Grid item xs={12}>
-                    <ListItemText align={props.location} secondary={props.messageTime}></ListItemText>
+                    <ListItemText align={location} secondary={messageTime}></ListItemText>
                 </Grid>
             </Grid>
         </>
