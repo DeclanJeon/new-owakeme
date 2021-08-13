@@ -5,7 +5,6 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Fab from '@material-ui/core/Fab';
@@ -77,7 +76,7 @@ const Chatting = () => {
     alert(error[0].errors[0].code)
   }, []);
   
-  const onSendMessage = (e) => {
+  const onSendMessage = useCallback((e) => {
     localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
         setChattingMessage('')
         setLocation([...location, "right"])
@@ -85,13 +84,13 @@ const Chatting = () => {
         setMessageStorage([...messageStorage, chattingMessage]);
         setUserStorage([...userStorage, userName]);
     })
-  }
+  }, [chattingMessage])
 
   const onChattingMessage = useCallback((e) => {
       e.preventDefault();
 
       setChattingMessage(e.currentTarget.value)
-  }, [])
+  }, [chattingMessage])
 
   localClient.on('ConnectionStateChanged', (newState, reason) => {
       
@@ -115,7 +114,7 @@ const Chatting = () => {
       const mediaId = args[0].mediaId;
       const fileName = args[0].fileName;
       const user = args[1];
-      debugger;
+      
       switch (messageType) {
         case 'IMAGE':
             localClient.downloadChannelMedia(mediaId).then((r) => {

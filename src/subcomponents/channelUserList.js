@@ -1,19 +1,28 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemText from '@material-ui/core/ListItemText';
 
-function channelUserList() {
+function ChannelUserList() {
+    const userNameList = useSelector(state => state.userReducer.userNameList);
+    
     return (
         <>
-            <ListItemAvatar align="left">
-                <Avatar>
-                    테스트
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText align="left">테스트</ListItemText>
+            {userNameList.map((userName, index) => {
+                return (
+                        <div  kye={index}>
+                            <ListItemAvatar align="left">
+                                <Avatar>
+                                    {userName}
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText align="left">{userName}</ListItemText>
+                        </div>
+                    )
+                })}
         </>
     )
 }
 
-export default channelUserList
+export default ChannelUserList

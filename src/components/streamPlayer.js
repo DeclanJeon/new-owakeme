@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux'
 
 const StreamPlayer = ({audioTrack, videoTrack, shareTrack, type, uid}) => {
     const container = useRef(null)
-
     const userName = useSelector(state => state.userReducer.userName)
-    
+
     useEffect(() => {
         if (!container.current) return;
         videoTrack?.play(container.current);

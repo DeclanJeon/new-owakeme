@@ -10,7 +10,8 @@ const userReducer = (state = initState, action) => {
         case USER_LOG_IN:
             return {
                 ...state,
-                userName: action.userName
+                userName: action.userName,
+                userNameList: [...state.userNameList, action.userName]
             };
         default:
             return state;
