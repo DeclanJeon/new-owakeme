@@ -47,7 +47,6 @@ export default class RTCClient {
         await this._client.publish([localAudioTrack, localVideoTrack]);
 
         //this.createRTCTrack();
-        debugger;
         return {localAudioTrack, localVideoTrack}
     }
 
