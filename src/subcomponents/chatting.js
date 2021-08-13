@@ -155,13 +155,13 @@ const Chatting = () => {
                         {({getRootProps}) => (
                             <div {...getRootProps()} className={classes.messageArea}>
                                 {messageStorage.length ?
-                                    messageStorage.map((message, index) => {
-                                        return (
+                                    messageStorage.map((message, index) => 
+                                        (
                                             <ListItem key={index}>
                                                 <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} messageTime="09:30" />
                                             </ListItem>
                                         )
-                                    })
+                                    )
                                 :
                                     <></>
                                 }
