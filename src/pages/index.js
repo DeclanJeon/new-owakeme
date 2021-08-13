@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles';
 import useRouter from '../utils/use-router';
@@ -43,22 +43,24 @@ export default function SignIn() {
   const [channelName, setChannelName] = useState('')
   const [userName, setUserName] = useState('')
 
-  const onChanelName = (e) => {
+  const onChanelName = useCallback((e) => {
     e.preventDefault();
 
     setChannelName(e.currentTarget.value)
-  }
-  const onUserName = (e) => {
+  },[channelName])
+
+  const onUserName = useCallback((e) => {
     e.preventDefault();
 
     setUserName(e.currentTarget.value)
-  }
-  const onEnterChanel = (e) => {
+  },[userName])
+
+  const onEnterChanel = useCallback((e) => {
     dispatch(userLogIn(userName))
     dispatch(channelEnter(channelName))
 
-    routerCtx.history.push({ pathname: `/meeting/${channelName}` })
-  }
+    routerCtx.history.push({ pathname: `/meeting` })
+  }, [userName, channelName])
 
   return (
     <div className="container">
