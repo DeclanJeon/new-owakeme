@@ -10,7 +10,7 @@ function App() {
     <BrowserRouterHook>
       <Switch>
         <Route exact path="/shareScreen" component={ShareScreen}></Route>
-        <Route exact path="/meeting/:channelName" component={Meeting}></Route>
+        <Route exact path="/meeting" component={Meeting}></Route>
         <Route path="/" component={Index}></Route>
       </Switch>
     </BrowserRouterHook>
