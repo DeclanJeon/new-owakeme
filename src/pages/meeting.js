@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -11,21 +11,15 @@ import { IonIcon } from '@ionic/react'
 import { clipboardOutline, micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOutline, logOutOutline } from 'ionicons/icons'
 import '../assets/css/channel.css';
 import useRouter from '../utils/use-router';
+import { onShareScreenUseYn } from '../reducer/actions/track';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(2),
   },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
   cardGrid: {
     paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
+    paddingBottom: theme.spacing(8)
   },
   card: {
     height: '100%',
@@ -38,23 +32,31 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
   },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
-  },
+  view_container: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    paddingTop: theme.spacing(8),
+    paddingBottom: theme.spacing(8)
+  }
 }));
 
-const client = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
+//const client = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
+let shareTrack = undefined;
 
 const Room = () => {
   const classes = useStyles();
   const routerCtx = useRouter();
-  const channelName = useSelector(state => state.channelReducer.channelName)
-  const [useMic, setUseMic] = useState(true)
-  const [useVideocam, setUseVideocam] = useState(true)
-  
+  const channelName = useSelector(state => state.channelReducer.channelName);
+  const [useMic, setUseMic] = useState(true);
+  const [useVideocam, setUseVideocam] = useState(true);
+
+  const client = useMemo(() => {
+    return AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
+  }, [])
+
   const {
-    localAudioTrack, localVideoTrack, leave, remoteUsers
+    localVideoTrack, localAudioTrack, remoteUsers, share, leave, onUseRtcMic, onUseRtcVideoCam
   } = RTCClient(client);
   
   const onMic = () => {
@@ -67,10 +69,14 @@ const Room = () => {
     localVideoTrack.setMuted(useVideocam)
   }
 
-  const onLeaveChannel = () => {
+  const onShareScreen = async function() {
+    shareTrack = await share();
+  }
+
+  const onLeaveChannel = useCallback(() => {
     leave();
     routerCtx.history.push({ pathname: '/' })
-  }
+  }, [])
 
   return (
     <>
@@ -89,19 +95,19 @@ const Room = () => {
                     
                 </div>
             </div>
-            <div className="view_container">
-              <Container className={classes.cardGrid} maxWidth="md">
-                {/* End hero unit */}
+            <div className={classes.view_container}>
+              {/* <Container className={classes.cardGrid} maxWidth="md"> */}
                     <div>
-                      <StreamPlayer audioTrack={localAudioTrack} videoTrack={localVideoTrack} style={{ flex: 1 }} />
+                      <StreamPlayer videoTrack={localVideoTrack} type='local' style={{ flex: 1 }} />
                     </div>
                     {remoteUsers.map((user) => (
                         <div key={user.uid}>
-                            <StreamPlayer audioTrack={user.audioTrack} videoTrack={user.videoTrack} />
+                            <StreamPlayer audioTrack={user.audioTrack} videoTrack={user.videoTrack} shareTrack={shareTrack} test={user} type='remote' uid={user.uid} />
                         </div>
                     ))}
-              </Container>
+              {/* </Container> */}
             </div>
+
             <div className="bottom_container">
                 <div className="view_mic">
                   {useMic ? <IonIcon icon={micOutline} onClick={onMic} /> : <IonIcon icon={micOffOutline} onClick={onMic} /> }
@@ -110,7 +116,7 @@ const Room = () => {
                   {useVideocam ? <IonIcon icon={videocamOutline} onClick={onVideocam} /> : <IonIcon icon={videocamOffOutline} onClick={onVideocam} /> }
                 </div>
                 <div className="view_share">
-                    <IonIcon icon={shareOutline} />
+                    <IonIcon icon={shareOutline} onClick={onShareScreen} />
                 </div>
                 <div className="view_out">
                     <IonIcon icon={logOutOutline} onClick={onLeaveChannel} />
