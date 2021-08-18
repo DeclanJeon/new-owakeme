@@ -31,4 +31,4 @@ const StreamPlayer = ({audioTrack, videoTrack, shareTrack, type, uid}) => {
     )
 }
 
-export default StreamPlayer
+export default React.memo(StreamPlayer)

@@ -110,7 +110,6 @@ export default class RTMClient extends EventEmitter {
   async sendChannelImageMediaMessage (blob, channelName, files) {
     console.log('sendChannelImageMessage', blob, channelName)
     if (!this.channels[channelName] || !this.channels[channelName].joined) return
-    debugger;
     const mediaMessage = await this.client.createMediaMessageByUploading(blob, {
       messageType: "IMAGE",
       fileName: files.name,

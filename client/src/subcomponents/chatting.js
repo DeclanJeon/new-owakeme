@@ -10,8 +10,9 @@ import ListItem from '@material-ui/core/ListItem';
 import Fab from '@material-ui/core/Fab';
 import RTMClient from '../rtm-client';
 import ChattingUsersAndMessage from './chattingUsersAndMessage';
-import Dropzone from 'react-dropzone'
-import { saveAs } from 'file-saver'
+import Dropzone from 'react-dropzone';
+import { saveAs } from 'file-saver';
+import Alert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles({
   table: {
@@ -41,7 +42,6 @@ const Chatting = () => {
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
   const [location, setLocation] = useState([]);
-
   const [filePath, setFilePath] = useState('')
   
 
@@ -87,8 +87,6 @@ const Chatting = () => {
   }, [chattingMessage])
 
   const onChattingMessage = useCallback((e) => {
-      e.preventDefault();
-
       setChattingMessage(e.currentTarget.value)
   }, [chattingMessage])
 
@@ -115,21 +113,24 @@ const Chatting = () => {
       const fileName = args[0].fileName;
       const user = args[1];
       
+      const reader = new FileReader();
       switch (messageType) {
         case 'IMAGE':
             localClient.downloadChannelMedia(mediaId).then((r) => {
-                debugger;
-                //const reader = new FileReader();
-                //reader.readAsDataURL(r);
-                //reader.onload = function(e) {
-                //    setFilePath(e.target.result)
-                //}
-                saveAs(r, fileName)
+                reader.readAsDataURL(r);
+                reader.onload = function(e) {
+                    setFilePath(e.target.result)
+                }
+                //saveAs(r, fileName)
             })
         break;
         case 'FILE':
             localClient.downloadChannelMedia(mediaId).then((r) => {
-                saveAs(r, fileName)
+                reader.readAsDataURL(r);
+                reader.onload = function(e) {
+                    setFilePath(e.target.result)
+                }
+                //saveAs(r, fileName)
             })
         break;
         default:  
@@ -148,8 +149,8 @@ const Chatting = () => {
                 <List className={classes.messageArea}>
                     <Dropzone
                         onDrop={onDrop}
-                        maxSize={32000000}
                         onDropRejected={onDropRejected}
+                        maxSize={32000000}
                     >
                         {({getRootProps}) => (
                             <div {...getRootProps()} className={classes.messageArea}>
@@ -164,7 +165,6 @@ const Chatting = () => {
                                 :
                                     <></>
                                 }
-        
                                 {filePath ? <img src={filePath} /> : <></>}
                             </div>
                         )}
