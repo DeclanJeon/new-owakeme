@@ -1,15 +1,7 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { GoogleLogin, GoogleLogout } from 'react-google-login'
-import { userLogIn } from '../reducer/actions/user'
+import React from 'react';
+import { GoogleLogin } from 'react-google-login';
 
-const GoogleLoginForm = () => {
-    const dispatch = useDispatch()
-
-    const onGoogleLoginSuccess = (e) => {
-        dispatch(userLogIn(e.profileObj.name))
-    }
-
+const GoogleLoginForm = ({ onGoogleLoginSuccess }) => {
     return (
         <>
             <GoogleLogin 
