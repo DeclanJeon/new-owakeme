@@ -42,11 +42,11 @@ const Chatting = () => {
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
   const [location, setLocation] = useState([]);
-  const [filePath, setFilePath] = useState('')
+  const [filePath, setFilePath] = useState('');
   
 
-  const channelName = useSelector(state => state.channelReducer.channelName)
-  const userName = useSelector(state => state.userReducer.userName)
+  const channelName = useSelector(state => state.channelReducer.channelName);
+  const userName = useSelector(state => state.userReducer.userName);
 
   const localClient = useMemo(() => {
     const client = new RTMClient();
