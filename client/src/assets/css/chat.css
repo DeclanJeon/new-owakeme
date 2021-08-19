@@ -7,7 +7,7 @@
   width: fit-content;
   margin-bottom: 30px;
 }
-d .chat__name {
+.chat__name {
   position: absolute;
   top: -15px;
   font-weight: 800;
