@@ -1,8 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
 import StreamPlayer from '../components/streamPlayer';
 import NavBar from '../components/navBar';
 import AgoraRTC from 'agora-rtc-sdk-ng';
@@ -11,7 +9,8 @@ import { IonIcon } from '@ionic/react'
 import { clipboardOutline, micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOutline, logOutOutline } from 'ionicons/icons'
 import '../assets/css/channel.css';
 import useRouter from '../utils/use-router';
-import { onShareScreenUseYn } from '../reducer/actions/track';
+import axios from 'axios';
+import { userLogOut } from '../reducer/actions/user';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -48,8 +47,10 @@ const Room = () => {
   const classes = useStyles();
   const routerCtx = useRouter();
   const channelName = useSelector(state => state.channelReducer.channelName);
+  const userName = useSelector(state => state.userReducer.userName);
   const [useMic, setUseMic] = useState(true);
   const [useVideocam, setUseVideocam] = useState(true);
+  const dispatch = useDispatch();
 
   const client = useMemo(() => {
     return AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
@@ -75,7 +76,16 @@ const Room = () => {
 
   const onLeaveChannel = useCallback(() => {
     leave();
-    routerCtx.history.push({ pathname: '/' })
+    dispatch(userLogOut());
+    const param = {
+      channelName: channelName,
+      userName: userName
+    }
+    axios.post('/api/remove/roomUserName', param).then((res) => {
+      if(res.data.success === true){
+        routerCtx.history.push({ pathname: '/' })
+      }
+    })
   }, [])
 
   return (
