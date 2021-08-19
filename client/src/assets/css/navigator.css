@@ -1,0 +1,46 @@
+.nav__container {
+  position: relative;
+  display: block;
+}
+
+.row_nav_container {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+.top_navbar > .channel_clipboard > ion-icon {
+  text-align: center;
+  font-size: 30px;
+  color: #fff;
+}
+.channel_name {
+  margin-right: 10px;
+  font-size: 1.5rem;
+  color: #fff;
+}
+.channel_clipboard {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.navigaitner {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.navigaitner > div {
+  margin-right: 20px;
+}
+
+.navigaitner > div > ion-icon {
+  font-size: 40px;
+  cursor: pointer;
+  color: #000;
+}
+/* 
+.nav__body__container {
+  padding: 10px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+} */

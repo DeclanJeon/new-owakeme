@@ -1,0 +1,74 @@
+.container {
+  background-image: url("../img/ag-index-background.png");
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+}
+.row__nav__container {
+  flex: 0.3;
+  width: 15vw;
+  height: 80vh;
+  position: relative;
+  border-radius: 30px;
+  margin-right: 10px;
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.row__view__container {
+  flex: 0.7;
+  width: 65vw;
+  height: 80vh;
+  border-radius: 30px;
+  background-color: #fff;
+  position: relative;
+}
+
+.video__container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  flex: 0.9;
+  /* flex: 0.7; */
+  margin: 5px;
+  display: inline-block;
+  flex-wrap: wrap;
+  overflow: auto;
+}
+.view__container {
+  position: relative;
+  margin: 10px;
+  border-radius: 22px;
+  -webkit-transform: translateZ(0);
+  overflow: hidden;
+}
+
+.bottom_container {
+  position: absolute;
+  flex: 0.1;
+  right: 0;
+  bottom: 0;
+  margin: 20px;
+}
+.bottom_container > div > ion-icon {
+  font-size: 30px;
+  margin-right: 20px;
+  cursor: pointer;
+  color: #000;
+}
+
+/* .view__container {
+  display: grid;
+  grid-template-columns: 200px auto 200px;
+  grid-template-rows: 200px 200px;
+} */
