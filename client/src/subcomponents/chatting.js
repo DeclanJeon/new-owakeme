@@ -173,14 +173,9 @@ const Chatting = () => {
                 </List>
             </div>
             <div className="inner__input__container">
-                <input
-                    type="text"
-                    placeholder="input text plaese"
-                    onChange={onChattingMessage}
-                    value={chattingMessage}
-                />
+                <TextField label="Type Something" fullWidth onChange={onChattingMessage} value={chattingMessage} />
                 &nbsp;
-                <SendOutlinedIcon onClick={onSendMessage} />
+                <Fab color="primary" aria-label="add" onClick={onSendMessage}>Send</Fab>
             </div>
         </div>
       </>
