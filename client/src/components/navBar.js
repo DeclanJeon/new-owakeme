@@ -14,13 +14,13 @@ const NavBar = () => {
         <div className="row_nav_container">
             <div className="navigaitner">
                 <div id="connect_user_list">
-                    <IonIcon icon={peopleOutline} onClick={() => setUserList(!userList)} />
+                    <IonIcon icon={peopleOutline} onClick={() => {setUserList(!userList); setChat(false); setSetting(false)}} />
                 </div>
                 <div id="chat">
-                    <IonIcon icon={chatboxEllipsesOutline} onClick={() => setChat(!chat)} />
+                    <IonIcon icon={chatboxEllipsesOutline} onClick={() => {setChat(!chat); setUserList(false); setSetting(false)}} />
                 </div>
                 <div id="setting">
-                    <IonIcon icon={settingsOutline} onClick={() => setSetting(!setting)} />
+                    <IonIcon icon={settingsOutline} onClick={() => {setSetting(!setting); setUserList(false); setChat(false)}} />
                 </div>
             </div>
             
