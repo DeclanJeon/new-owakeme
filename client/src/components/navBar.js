@@ -6,27 +6,29 @@ import { IonIcon } from '@ionic/react'
 import { peopleOutline, chatboxEllipsesOutline, settingsOutline } from 'ionicons/icons';
 
 const NavBar = () => {
-    const [selectNavBar, setSelectNavBar] = useState('')
+    const [userList, setUserList] = useState(false)
+    const [chat, setChat] = useState(false)
+    const [setting, setSetting] = useState(false)
 
     return (
         <div className="row_nav_container">
             <div className="navigaitner">
                 <div id="connect_user_list">
-                    <IonIcon icon={peopleOutline} onClick={() => setSelectNavBar('List')} />
+                    <IonIcon icon={peopleOutline} onClick={() => setUserList(!userList)} />
                 </div>
                 <div id="chat">
-                    <IonIcon icon={chatboxEllipsesOutline} onClick={() => setSelectNavBar('Chat')} />
+                    <IonIcon icon={chatboxEllipsesOutline} onClick={() => setChat(!chat)} />
                 </div>
                 <div id="setting">
-                    <IonIcon icon={settingsOutline} onClick={() => setSelectNavBar('Setting')} />
+                    <IonIcon icon={settingsOutline} onClick={() => setSetting(!setting)} />
                 </div>
             </div>
             
-            {selectNavBar === 'List' ? <ChannelUserList /> : <></>}
+            {userList ? <ChannelUserList /> : <></>}
                 
-            {selectNavBar === 'Chat' ? <Chatting /> : <></>}
+            {chat ? <Chatting /> : <></>}
 
-            {selectNavBar === 'Setting' ? <SettingDevice /> : <></>}
+            {setting ? <SettingDevice /> : <></>}
         </div>
     )
 }
