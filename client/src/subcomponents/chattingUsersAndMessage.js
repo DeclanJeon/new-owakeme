@@ -9,7 +9,7 @@ function chattingUsersAndMessage({location, userId, userMessage, messageTime }) 
         <>
             <p className={`chat__message ${true && "chat__reciever"}`}>
                 <span className="chat__name">{userId}</span>
-                    {{userMessage}}
+                    {userMessage}
                 <span className="chat__timestamp">{messageTime}</span>
             </p>
         </>
