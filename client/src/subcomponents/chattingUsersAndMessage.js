@@ -7,19 +7,11 @@ import Avatar from '@material-ui/core/Avatar';
 function chattingUsersAndMessage({location, userId, userMessage, messageTime }) {
     return (
         <>
-            <Grid container>
-                <Grid item xs={12}>
-                    <ListItemAvatar align={location}>
-                        <Avatar>
-                            {userId}
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText align={location}>{userMessage}</ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                    <ListItemText align={location} secondary={messageTime}></ListItemText>
-                </Grid>
-            </Grid>
+            <p className={`chat__message ${true && "chat__reciever"}`}>
+                <span className="chat__name">{userId}</span>
+                    {{userMessage}}
+                <span className="chat__timestamp">{messageTime}</span>
+            </p>
         </>
     )
 }

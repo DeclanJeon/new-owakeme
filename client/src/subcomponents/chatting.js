@@ -12,7 +12,8 @@ import RTMClient from '../rtm-client';
 import ChattingUsersAndMessage from './chattingUsersAndMessage';
 import Dropzone from 'react-dropzone';
 import { saveAs } from 'file-saver';
-import Alert from '@material-ui/lab/Alert'
+import "../assets/css/chat.css";
+import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
 
 const useStyles = makeStyles({
   table: {
@@ -121,7 +122,7 @@ const Chatting = () => {
                 reader.onload = function(e) {
                     setFilePath(e.target.result)
                 }
-                //saveAs(r, fileName)
+                saveAs(r, fileName)
             })
         break;
         case 'FILE':
@@ -130,7 +131,7 @@ const Chatting = () => {
                 reader.onload = function(e) {
                     setFilePath(e.target.result)
                 }
-                //saveAs(r, fileName)
+                saveAs(r, fileName)
             })
         break;
         default:  
@@ -144,8 +145,8 @@ const Chatting = () => {
 
   return (
       <>
-        <Grid container component={Paper} className={classes.chatSection}>
-            <Grid item xs={12}>
+        <div className="chat__body">
+            <div className="inner__body__container">
                 <List className={classes.messageArea}>
                     <Dropzone
                         onDrop={onDrop}
@@ -170,17 +171,18 @@ const Chatting = () => {
                         )}
                     </Dropzone>
                 </List>
-                <Divider />
-                <Grid container>
-                    <Grid item xs={11}>
-                        <TextField label="Type Something" fullWidth onChange={onChattingMessage} value={chattingMessage} />
-                    </Grid>
-                    <Grid xs={1} align="right">
-                        <Fab color="primary" aria-label="add" onClick={onSendMessage}>Send</Fab>
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Grid>
+            </div>
+            <div className="inner__input__container">
+                <input
+                    type="text"
+                    placeholder="input text plaese"
+                    onChange={onChattingMessage}
+                    value={chattingMessage}
+                />
+                &nbsp;
+                <SendOutlinedIcon onClick={onSendMessage} />
+            </div>
+        </div>
       </>
   );
 }

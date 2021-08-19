@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles';
 import useRouter from '../utils/use-router';
-import '../assets/css/style.css';
 import { Button } from '@material-ui/core';
 import GoogleLoginForm from '../components/googleLoginForm';
 import { userLogIn } from '../reducer/actions/user';
@@ -11,6 +10,9 @@ import { setDeviceList } from '../reducer/actions/deviceList';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import axios from 'axios';
 import { googleLogIn } from '../reducer/actions/user';
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import QueueIcon from "@material-ui/icons/Queue";
+import "../assets/css/mainpage.css";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -61,7 +63,7 @@ export default function SignIn() {
 
     dispatch(channelEnter(channelName))
     dispatch(googleLogIn(e.profileObj.name))
-
+    debugger;
     const param = {
       channelName: channelName,
       userName: e.profileObj.name
@@ -102,37 +104,62 @@ export default function SignIn() {
 
   return (
     <div className="container">
-        <div className="row_container">
-            <div id="logo">
-                <h1 className="title">OWAKE</h1>
+      <div className="row_container">
+        <div className="inline_container">
+          <div className="logo"></div>
+
+          <div id="title_copyright">
+            <p>
+              Hyper Augmented Omni <br />
+              Communication Chnnel_OWAKE
+            </p>
+          </div>
+
+          <div className="btn_container">
+            <div className="left_image_container">
+              <img
+                src="https://cdn.pixabay.com/photo/2016/03/09/09/17/girl-1245713__340.jpg"
+                alt=""
+                style={{ width: "300px" }}
+              />
+            </div>
+            <div className="right_btn_container">
+              <div id="Name_Your_Channel">
+                <input
+                  id="Name_Your_Channel_input"
+                  placeholder="Name Your Channel"
+                  onChange={onChanelName}
+                />
+              </div>
+              <div>
+                <input
+                  id="Name_Your_Channel_input"
+                  placeholder="User Name"
+                  onChange={onUserName}
+                />
+              </div>
+              <div id="Create_Channel">
+                <Button onClick={onEnterChanel}>Join Channel</Button>
+              </div>
             </div>
 
-            <div id="title_copyright">
-                <span>Hyper Augmented Omni <br />Communication Chnnel_OWAKE</span>
-            </div>
+            {/* <GoogleLoginForm onGoogleLoginSuccess={onGoogleLoginSuccess} /> */}
+          
+          </div>
 
-            <div className="btn_container">
-                <div className="row">
-                    <div id="Name_Your_Channel">
-                        <input id="Name_Your_Channel_input" placeholder="Name Your Channel" onChange={onChanelName} value={channelName} />
-                    </div>
-                    <div>
-                        <input id="Name_Your_Channel_input" placeholder="User Name" onChange={onUserName} value={userName} />
-                    </div>
-                    <div id="Create_Channel">
-                        <Button style={{ width: '35vw', height: '5vh' }} onClick={onEnterChanel}>Join Channel</Button>
-                    </div>
-                </div>
+          <div className="icon__btn__container">
+            <LibraryBooksIcon id="roomList" />
+            <QueueIcon id="roomAdd" />
+          </div>
 
-                <GoogleLoginForm onGoogleLoginSuccess={onGoogleLoginSuccess} />
-            </div>
-
-            <footer id="footer">
-                <span id="left">@Copyright 2021 build by Owakeme.com
-                </span>
-                <span id="right">Sponsored by Kronosa.org</span>
+          <div id="footer">
+            <footer>
+              <p id="left">@Copyright 2021 built by Owakeme.com</p>
+              <p id="right">Sponsored by Kronosa.org</p>
             </footer>
+          </div>
         </div>
+      </div>
     </div>
   );
 }

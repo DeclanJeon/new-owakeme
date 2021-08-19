@@ -30,7 +30,7 @@ function ChannelUserList() {
                 return (
                         <div key={index}>
                             <ListItemAvatar align="left">
-                                <Avatar>
+                                <Avatar src="https://lh3.googleusercontent.com/a/AATXAJxrlIg3OBE7ycrVBlOUKeeaCC1elPsTmlt1U0Ss=s96-c">
                                     {userName}
                                 </Avatar>
                             </ListItemAvatar>
