@@ -34,11 +34,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   view_container: {
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8)
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
   }
 }));
 

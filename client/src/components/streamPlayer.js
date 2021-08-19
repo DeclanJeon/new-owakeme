@@ -23,8 +23,14 @@ const StreamPlayer = ({audioTrack, videoTrack, shareTrack, type, uid}) => {
 
     return (
         <>
-            <div ref={container} style={{ width: "480px", height: "320px"}}>
-                
+            <div
+                className="view__container"
+                ref={container}
+                style={{ width: "25vw", height: "25vh" }}
+            >
+                <span style={{ position: "absolute", zIndex: "999", color: "white" }}>
+                    {uid}
+                </span>
             </div>
             {/* <span>{type === 'local' ? 'local ' + userName : 'remote ' + uid}</span> */}
         </>
