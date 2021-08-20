@@ -67,7 +67,7 @@ router.post('/remove/roomUserName', (req, res) => {
 router.post('/room/register', (req, res) => {
     const bodyData = req.body;
 
-    db.collection("RoomList").doc("test").set({
+    db.collection("RoomList").add({
         roomNumber: bodyData.roomNumber,
         roomPassword: bodyData.roomPassword,
         makeUserName: bodyData.makeUserName
@@ -80,8 +80,28 @@ router.post('/room/register', (req, res) => {
     .catch((err) => {
         return res.status(500).json({
             success: false,
-            err: err
+            error: err
         });
+    })
+})
+
+router.get('/room/roomList', (req, res) => {
+    const roomArray = []
+
+    db.collection("RoomList").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+           roomArray.push(doc.data());
+        });
+
+        return res.status(200).json({
+            success: true,
+            roomList: roomArray
+        })
+    }).catch((err) => {
+        return res.status(500).json({
+            success: false,
+            error: err
+        })
     })
 })
 
