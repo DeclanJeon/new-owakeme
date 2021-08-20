@@ -41,13 +41,13 @@ body {
   margin: 0 auto;
   background-image: url("../img/owake_logo.svg");
   background-size: cover;
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   cursor: pointer;
 }
 
 #title_copyright > p {
-  font-size: 2em;
+  font-size: 1.4em;
   color: #00aefc;
   font-weight: bold;
   text-align: left;
