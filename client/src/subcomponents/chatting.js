@@ -16,19 +16,6 @@ import "../assets/css/chat.css";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  chatSection: {
-    width: '30vw',
-    height: '100%'
-  },
-  headBG: {
-      backgroundColor: '#e0e0e0'
-  },
-  borderRight500: {
-      borderRight: '1px solid #e0e0e0'
-  },
   messageArea: {
     height: '70vh',
     overflowY: 'auto'
@@ -85,7 +72,7 @@ const Chatting = () => {
         setMessageStorage([...messageStorage, chattingMessage]);
         setUserStorage([...userStorage, userName]);
     })
-  }, [chattingMessage])
+  }, [chattingMessage, location, userStorage])
 
   const onChattingMessage = useCallback((e) => {
       setChattingMessage(e.currentTarget.value)
@@ -173,9 +160,17 @@ const Chatting = () => {
                 </List>
             </div>
             <div className="inner__input__container">
-                <TextField label="Type Something" fullWidth onChange={onChattingMessage} value={chattingMessage} />
+                <TextField
+                    label="Input Text"
+                    fullWidth
+                    onChange={onChattingMessage}
+                    value={chattingMessage}
+                />
                 &nbsp;
-                <Fab color="primary" aria-label="add" onClick={onSendMessage}>Send</Fab>
+                <SendOutlinedIcon
+                    id="sendOutlinedIcon"
+                    onClick={onSendMessage}
+                ></SendOutlinedIcon>
             </div>
         </div>
       </>
