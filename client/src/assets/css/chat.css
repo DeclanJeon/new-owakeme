@@ -44,11 +44,17 @@
   margin-top: 5px;
   height: 8vh;
   display: flex;
-  border-radius: 30px;
-  background-color: bisque;
+  margin: 15px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  height: 30px;
+  outline: none;
+}
+
+#sendOutlinedIcon {
+  font-size: 30px;
+  cursor: pointer;
 }
 
 #chatInputWindow {
