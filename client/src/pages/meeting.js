@@ -6,7 +6,7 @@ import NavBar from '../components/navBar';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import RTCClient from '../rtc-client';
 import { IonIcon } from '@ionic/react'
-import { clipboardOutline, micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOutline, logOutOutline } from 'ionicons/icons'
+import { micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOutline, logOutOutline } from 'ionicons/icons'
 import useRouter from '../utils/use-router';
 import axios from 'axios';
 import { userLogOut } from '../reducer/actions/user';
