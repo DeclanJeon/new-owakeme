@@ -1,8 +1,4 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
 
 function chattingUsersAndMessage({location, userId, userMessage, messageTime }) {
     return (
@@ -16,4 +12,4 @@ function chattingUsersAndMessage({location, userId, userMessage, messageTime }) 
     )
 }
 
-export default chattingUsersAndMessage
+export default React.memo(chattingUsersAndMessage)
