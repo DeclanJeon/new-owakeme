@@ -1,0 +1,54 @@
+.channel__container {
+  position: relative;
+  display: block;
+}
+
+.channel__inner__container {
+  position: absolute;
+  display: inline-block;
+  width: 100%;
+  height: 250px;
+}
+/* 
+.thumbnail__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail__image {
+  background-color: #000;
+  height: 150px;
+  flex: 1;
+  margin-right: 10px;
+  align-items: center;
+  justify-content: center;
+} */
+
+.channel__description {
+  padding: 20px;
+}
+
+.thumbnail__upload__btn {
+  width: 20%;
+  flex: 0.3;
+}
+
+.channel__title {
+  margin-bottom: 8px;
+}
+
+.channel__introduction__container {
+  display: flex;
+
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000;
+}
+
+.channel__create__btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 20px;
+}
