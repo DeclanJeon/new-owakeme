@@ -7,6 +7,11 @@ function VideoCard(props) {
 
   return (
     <div className="videoCard">
+      {/* 
+        작성자 : 전형동
+        작성일 : 210823
+        내용 : 이미지 추가할 때까지 대기
+      */}
       {/* <img className="videoCard__thumbnail" src={image} alt="" /> */}
       <div className="videoCard__info">
         <Avatar

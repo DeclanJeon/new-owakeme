@@ -32,6 +32,16 @@ function SearchPage() {
         title="Let's Build a Youtube Cover"
         image="https://i.ytimg.com/vi/6FJXakx7-fQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBJhmDv3R3m0AuVehrJXm6PIZaJ-Q"
       />
+
+      <VideoRow
+        views="1.4M"
+        subs="11400K"
+        description="Do you wnat a Free Videos"
+        timestamp="59 seconds ago"
+        channel="EZ DO BAND"
+        title="Let's Build a Youtube Cover"
+        image="https://i.ytimg.com/vi/6FJXakx7-fQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBJhmDv3R3m0AuVehrJXm6PIZaJ-Q"
+      />
     </div>
   );
 }

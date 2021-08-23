@@ -15,6 +15,10 @@
   margin-left: 20px;
 }
 
+.logo__img {
+  background-image: url("../img/owake_logo.svg");
+}
+
 .header__input {
   display: flex;
   align-items: center;
@@ -26,7 +30,6 @@
   color: #fff;
   cursor: pointer;
 }
-
 .header__icon {
   margin-right: 8px;
   cursor: pointer;

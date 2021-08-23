@@ -74,7 +74,7 @@ function ChannelCreate() {
               <option>Public</option>
               <option>Primary</option>
             </Select>
-            <Input type="password" placeholder="password Input" />
+            <Input type="password" placeholder="Please enter your password" />
           </FormControl>
           <div className="channel__create__btn">
             <Button variant="contained" color="primary" disableElevation>

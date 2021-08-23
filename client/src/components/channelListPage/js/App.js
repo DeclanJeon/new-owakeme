@@ -10,7 +10,6 @@ function App() {
     <div className="app">
       <Router>
         <Header />
-
         <Switch>
           <Route path="/search/:searchTerm">
             <div className="app__page">

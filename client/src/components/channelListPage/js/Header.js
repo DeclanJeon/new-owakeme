@@ -70,11 +70,7 @@ function Header() {
       <div className="header__left">
         <MenuIcon />
         <Link to="/">
-          <img
-            className="header__logo"
-            src="../img/owake_logo.svg"
-            alt="OWAKE LOGO"
-          />
+          <div className="logo__img"></div>
         </Link>
       </div>
 

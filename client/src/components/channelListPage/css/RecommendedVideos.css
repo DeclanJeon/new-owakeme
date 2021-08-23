@@ -17,7 +17,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .recommendedVideos__videos {
   display: flex;
   flex-wrap: wrap;
