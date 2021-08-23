@@ -172,7 +172,6 @@ const Chatting = () => {
                 ></SendOutlinedIcon>
             </div>
         </div>
-      </div>
     </>
   );
 };
