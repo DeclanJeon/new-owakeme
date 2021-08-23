@@ -68,10 +68,12 @@ function Header() {
   return (
     <div className="header">
       <div className="header__left">
-        <MenuIcon />
-        <Link to="/">
-          <div className="logo__img"></div>
+        {/*
+          <MenuIcon />
+          <Link to="/">
+            <div className="logo__img"></div>
         </Link>
+        */}
       </div>
 
       <div className="header__input">
@@ -89,8 +91,10 @@ function Header() {
 
       <div className="header__icons">
         <AddIcon className="header__icon" onClick={handleOpen} />
-        <NotificationsIcon className="header__icon" />
-        <Avatar className="header__icon" alt="Remy Sharp" src="" />
+        {/*
+          <NotificationsIcon className="header__icon" />
+          <Avatar className="header__icon" alt="Remy Sharp" src="" />
+        */}
       </div>
       <Modal
         open={open}
