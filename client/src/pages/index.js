@@ -63,7 +63,7 @@ export default function SignIn() {
 
     dispatch(channelEnter(channelName))
     dispatch(googleLogIn(e.profileObj.name))
-    debugger;
+
     const param = {
       channelName: channelName,
       userName: e.profileObj.name
@@ -101,6 +101,14 @@ export default function SignIn() {
         }
       })
   }, [userName, channelName])
+
+  const makeRoom = useCallback(() => {
+    routerCtx.history.push({ pathname: `/makeRoom` });
+  }, [])
+
+  const roomList = useCallback(() => {
+    routerCtx.history.push({ pathname: `/roomList` });
+  }, [])
 
   return (
     <div className="container">
@@ -148,14 +156,15 @@ export default function SignIn() {
           </div>
 
           <div className="icon__btn__container">
-            <LibraryBooksIcon id="roomList" />
-            <QueueIcon id="roomAdd" />
+            <LibraryBooksIcon onClick={roomList} />
+            <QueueIcon onClick={makeRoom} />
           </div>
 
           <div id="footer">
             <footer>
-              <p id="left">@Copyright 2021 built by Owakeme.com</p>
-              <p id="right">Sponsored by Kronosa.org</p>
+              <span id="left">@Copyright 2021 built by Owakeme.com</span>
+                <br />
+              <span id="right">Sponsored by Kronosa.org</span>
             </footer>
           </div>
         </div>
