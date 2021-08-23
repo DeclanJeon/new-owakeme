@@ -1,9 +1,9 @@
 import './App.css';
 import { BrowserRouterHook } from './utils/use-router'
 import { Switch, Route } from 'react-router-dom';
-import Index from './pages/index'
-import Meeting from './pages/meeting'
-import ShareScreen from './pages/shareScreen'
+import Index from './pages/index';
+import Meeting from './pages/meeting';
+import ShareScreen from './pages/shareScreen';
 
 function App() {
   return (
