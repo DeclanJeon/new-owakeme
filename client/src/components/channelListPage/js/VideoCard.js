@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import "../css/VideoCard.css";
-import { Avatar } from "@material-ui/core";
+import { Button, Input, Avatar } from '@material-ui/core';
+import axios from 'axios';
 
-function VideoCard(props) {
-  const { image, title, channel, views, timestamp, channelImage } = props;
+function VideoCard({ image, title, channel, views, timestamp, channelImage, roomNumber, makeUserName }) {
+  const [enterPassword, setEnterPassword] = useState('');
+  const [roomName, setRoomName] = useState('');
+
+  const onEnterRoom = useCallback((roomName) => {
+    //비밀번호 확인
+    const body = {
+      channelName: roomName,
+      roomPassword: enterPassword
+    }
+    axios.post('/api/room/getRoomInfo', body).then(res => {
+      if (!res.data.passwordCheckResult) {
+        return
+      }
+    })
+  }, [roomName, enterPassword]);
+
+  const onChangeEnterPassword = useCallback((e) => {
+    setEnterPassword(e.target.value);
+  }, []);
 
   return (
     <div className="videoCard">
@@ -25,10 +44,19 @@ function VideoCard(props) {
           <p>
             {views} ● {timestamp}
           </p>
+          
+          <Input
+              onChange={onChangeEnterPassword}
+              placeholder="Enter a Password"
+            />
+          <span>Room Number: {roomNumber}</span>
+          <Button variant="contained" onClick={() => onEnterRoom()}>
+            Enter
+          </Button>
         </div>
       </div>
     </div>
   );
 }
 
-export default VideoCard;
+export default React.memo(VideoCard);
