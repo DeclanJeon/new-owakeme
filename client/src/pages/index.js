@@ -113,12 +113,8 @@ export default function SignIn() {
     [userName, channelName]
   );
 
-  const makeRoom = useCallback(() => {
-    routerCtx.history.push({ pathname: `/makeRoom` });
-  }, [])
-
   const roomList = useCallback(() => {
-    routerCtx.history.push({ pathname: `/roomList` });
+    routerCtx.history.push({ pathname: `/channelList` });
   }, [])
 
   return (
@@ -167,7 +163,7 @@ export default function SignIn() {
 
           <div className="icon__btn__container">
             <LibraryBooksIcon onClick={roomList} />
-            <QueueIcon onClick={makeRoom} />
+            {/* <QueueIcon /> */}
           </div>
 
           <div id="footer">
