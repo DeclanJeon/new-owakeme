@@ -1,32 +1,33 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles';
-import useRouter from '../utils/use-router';
-import { Button } from '@material-ui/core';
-import GoogleLoginForm from '../components/googleLoginForm';
-import { userLogIn } from '../reducer/actions/user';
-import { channelEnter } from '../reducer/actions/channel';
-import { setDeviceList } from '../reducer/actions/deviceList';
-import AgoraRTC from 'agora-rtc-sdk-ng';
-import axios from 'axios';
-import { googleLogIn } from '../reducer/actions/user';
+import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+import useRouter from "../utils/use-router";
+import { Button } from "@material-ui/core";
+import GoogleLoginForm from "../components/googleLoginForm";
+import { userLogIn } from "../reducer/actions/user";
+import { channelEnter } from "../reducer/actions/channel";
+import { setDeviceList } from "../reducer/actions/deviceList";
+import AgoraRTC from "agora-rtc-sdk-ng";
+import axios from "axios";
+import { googleLogIn } from "../reducer/actions/user";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import QueueIcon from "@material-ui/icons/Queue";
 import "../assets/css/mainpage.css";
+import { AppBar } from "@material-ui/core/AppBar";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -39,21 +40,27 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    AgoraRTC.getDevices().then(devices => {
+    AgoraRTC.getDevices().then((devices) => {
       dispatch(setDeviceList(devices));
-    })
-  }, [])
-  
-  const [channelName, setChannelName] = useState('')
-  const [userName, setUserName] = useState('')
+    });
+  }, []);
 
-  const onChanelName = useCallback((e) => {
-    setChannelName(e.currentTarget.value)
-  },[channelName])
+  const [channelName, setChannelName] = useState("");
+  const [userName, setUserName] = useState("");
 
-  const onUserName = useCallback((e) => {
-    setUserName(e.currentTarget.value)
-  },[userName])
+  const onChanelName = useCallback(
+    (e) => {
+      setChannelName(e.currentTarget.value);
+    },
+    [channelName]
+  );
+
+  const onUserName = useCallback(
+    (e) => {
+      setUserName(e.currentTarget.value);
+    },
+    [userName]
+  );
 
   // 구글 로그인
   const onGoogleLoginSuccess = useCallback((e) => {
@@ -74,33 +81,37 @@ export default function SignIn() {
         if(res.data.success === true){
           routerCtx.history.push({ pathname: `/meeting` });
         }
-      })
-  }, [userName, channelName])
+      });
+    },
+    [userName, channelName]
+  );
 
   // 일반 로그인
-  const onEnterChanel = useCallback((e) => {
-    if(channelName === ''){
-      return alert("Please enter the channelName");
-    }
-    if(userName === ''){
-      return alert("Please enter the userName");
-    }
+  const onEnterChanel = useCallback(
+    (e) => {
+      if (channelName === "") {
+        return alert("Please enter the channelName");
+      }
+      if (userName === "") {
+        return alert("Please enter the userName");
+      }
 
-    dispatch(userLogIn(userName))
-    dispatch(channelEnter(channelName))
+      dispatch(userLogIn(userName));
+      dispatch(channelEnter(channelName));
 
-    const param = {
-      channelName: channelName,
-      userName: userName
-    };
+      const param = {
+        channelName: channelName,
+        userName: userName,
+      };
 
-    axios.post('/api/save/roomUserName', param)
-      .then((res) => {
-        if(res.data.success === true){
+      axios.post("/api/save/roomUserName", param).then((res) => {
+        if (res.data.success === true) {
           routerCtx.history.push({ pathname: `/meeting` });
         }
-      })
-  }, [userName, channelName])
+      });
+    },
+    [userName, channelName]
+  );
 
   const makeRoom = useCallback(() => {
     routerCtx.history.push({ pathname: `/makeRoom` });
@@ -152,7 +163,6 @@ export default function SignIn() {
             </div>
 
             {/* <GoogleLoginForm onGoogleLoginSuccess={onGoogleLoginSuccess} /> */}
-          
           </div>
 
           <div className="icon__btn__container">

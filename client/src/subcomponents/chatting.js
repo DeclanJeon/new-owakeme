@@ -22,48 +22,52 @@ const IMAGE_FORMAT = "\\.(bmp|gif|jpg|jpeg|png)$";
 
 const Chatting = () => {
   const classes = useStyles();
-  const [chattingMessage, setChattingMessage] = useState('')
+  const [chattingMessage, setChattingMessage] = useState("");
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
   const [location, setLocation] = useState([]);
-  const [filePath, setFilePath] = useState('');
-  
+  const [filePath, setFilePath] = useState("");
 
-  const channelName = useSelector(state => state.channelReducer.channelName);
-  const userName = useSelector(state => state.userReducer.userName);
+  const channelName = useSelector((state) => state.channelReducer.channelName);
+  const userName = useSelector((state) => state.userReducer.userName);
 
   const localClient = useMemo(() => {
     const client = new RTMClient();
-    return client
-  }, [])
+    return client;
+  }, []);
 
   useEffect(() => {
     localClient.init(process.env.REACT_APP_AGORA_APP_ID);
     localClient.login(userName, "", channelName);
-  }, [localClient])
+  }, [localClient]);
 
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.map((files) => {
-       if(new RegExp(IMAGE_FORMAT, "i").test(files.name)){
-            localClient.sendChannelImageMediaMessage(files, channelName, files).then(() => {
-                alert('이미지 업로드 완료')
-            });
-       } else {
-            localClient.sendChannelFileMediaMessage(files, channelName, files).then(() => {
-                alert('파일 업로드 완료')
-            });
-       }
-    })
+      if (new RegExp(IMAGE_FORMAT, "i").test(files.name)) {
+        localClient
+          .sendChannelImageMediaMessage(files, channelName, files)
+          .then(() => {
+            alert("이미지 업로드 완료");
+          });
+      } else {
+        localClient
+          .sendChannelFileMediaMessage(files, channelName, files)
+          .then(() => {
+            alert("파일 업로드 완료");
+          });
+      }
+    });
   }, []);
 
   const onDropRejected = useCallback((error) => {
-    alert(error[0].errors[0].code)
+    alert(error[0].errors[0].code);
   }, []);
-  
-  const onSendMessage = useCallback((e) => {
-    localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
-        setChattingMessage('')
-        setLocation([...location, "right"])
+
+  const onSendMessage = useCallback(
+    (e) => {
+      localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
+        setChattingMessage("");
+        setLocation([...location, "right"]);
 
         setMessageStorage([...messageStorage, chattingMessage]);
         setUserStorage([...userStorage, userName]);
@@ -108,23 +112,22 @@ const Chatting = () => {
                 saveAs(r, fileName)
             })
         break;
-        case 'FILE':
-            localClient.downloadChannelMedia(mediaId).then((r) => {
-                reader.readAsDataURL(r);
-                reader.onload = function(e) {
-                    setFilePath(e.target.result)
-                }
-                saveAs(r, fileName)
-            })
+      case "FILE":
+        localClient.downloadChannelMedia(mediaId).then((r) => {
+          reader.readAsDataURL(r);
+          reader.onload = function (e) {
+            setFilePath(e.target.result);
+          };
+          saveAs(r, fileName);
+        });
         break;
-        default:  
-            setLocation([...location, "left"])
-            setMessageStorage([...messageStorage, message]);
-            setUserStorage([...userStorage, user]);
+      default:
+        setLocation([...location, "left"]);
+        setMessageStorage([...messageStorage, message]);
+        setUserStorage([...userStorage, user]);
         break;
-      }
-      
-  })
+    }
+  });
 
   return (
       <>
@@ -169,8 +172,9 @@ const Chatting = () => {
                 ></SendOutlinedIcon>
             </div>
         </div>
-      </>
+      </div>
+    </>
   );
-}
+};
 
 export default React.memo(Chatting);
