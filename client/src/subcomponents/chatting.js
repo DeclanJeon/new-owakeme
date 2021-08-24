@@ -51,6 +51,53 @@ const Chatting = () => {
   useEffect(() => {
     localClient.init(process.env.REACT_APP_AGORA_APP_ID);
     localClient.login(userName, "", channelName);
+
+    localClient.on('ConnectionStateChanged', (newState, reason) => {
+      
+    })
+  
+    localClient.on('MessageFromPeer', async (message, peerId) => {
+        
+    })
+  
+    localClient.on('MemberJoined', ({ channelName, args }) => {
+        
+    })
+  
+    localClient.on('MemberLeft', ({ channelName, args }) => {
+        
+    })
+  
+    localClient.on('ChannelMessage', async ({ channelName, args }) => {
+        const message = args[0].text;
+        const messageType = args[0].messageType;
+        const mediaId = args[0].mediaId;
+        const fileName = args[0].fileName;
+        const user = args[1];
+        
+        const reader = new FileReader();
+        switch (messageType) {
+          case 'IMAGE':
+              localClient.downloadChannelMedia(mediaId).then((r) => {
+                  reader.readAsDataURL(r);
+                  reader.onload = function(e) {
+                      setFilePath(e.target.result)
+                  }
+                  saveAs(r, fileName)
+              })
+          break;
+          case "FILE":
+            localClient.downloadChannelMedia(mediaId).then((r) => {
+              saveAs(r, fileName);
+            });
+            break;
+          default:
+            setLocation([...location, "left"]);
+            setMessageStorage([...messageStorage, message]);
+            setUserStorage([...userStorage, user]);
+            break;
+      }
+    });
   }, [userName, channelName]);
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -93,53 +140,6 @@ const Chatting = () => {
   const onChattingMessage = useCallback((e) => {
       setChattingMessage(e.currentTarget.value)
   }, [chattingMessage])
-
-  localClient.on('ConnectionStateChanged', (newState, reason) => {
-      
-  })
-
-  localClient.on('MessageFromPeer', async (message, peerId) => {
-      
-  })
-
-  localClient.on('MemberJoined', ({ channelName, args }) => {
-      
-  })
-
-  localClient.on('MemberLeft', ({ channelName, args }) => {
-      
-  })
-
-  localClient.on('ChannelMessage', async ({ channelName, args }) => {
-      const message = args[0].text;
-      const messageType = args[0].messageType;
-      const mediaId = args[0].mediaId;
-      const fileName = args[0].fileName;
-      const user = args[1];
-      
-      const reader = new FileReader();
-      switch (messageType) {
-        case 'IMAGE':
-            localClient.downloadChannelMedia(mediaId).then((r) => {
-                reader.readAsDataURL(r);
-                reader.onload = function(e) {
-                    setFilePath(e.target.result)
-                }
-                saveAs(r, fileName)
-            })
-        break;
-        case "FILE":
-          localClient.downloadChannelMedia(mediaId).then((r) => {
-            saveAs(r, fileName);
-          });
-          break;
-        default:
-          setLocation([...location, "left"]);
-          setMessageStorage([...messageStorage, message]);
-          setUserStorage([...userStorage, user]);
-          break;
-    }
-  });
 
   const downloadFile = useCallback(() => {
     setOpen(false);
