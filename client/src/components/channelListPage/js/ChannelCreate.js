@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import "../css/ChannelCreate.css";
 import { Button, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
-
-import { HashRouterasRouter } from "react-router-dom";
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,9 +23,54 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ChannelCreate() {
+function ChannelCreate({ onClose }) {
   const classes = useStyles();
-  const handleChange = (event) => {};
+  //const handleChange = (event) => {};
+
+  const [roomNumber, setRoomNumber] = useState('');
+  const [roomPassword, setRoomPassword] = useState('');
+  const [useName, setUserName] = useState('');
+
+  const saveClick = useCallback(() => {
+      if (roomPassword == '') {
+          alert('Please enter the password')
+          return
+      }
+
+      const reqData = {
+          roomNumber: roomNumber,
+          roomPassword: roomPassword,
+          makeUserName: useName
+      }
+
+      axios.post('/api/room/register', reqData)
+          .then(res => {
+              if (res.data.success) {
+                  alert("To room setting is success")
+                  setRoomNumber('');
+                  setRoomPassword('');
+                  setUserName('');
+                  onClose();
+                  window.location.reload();
+              }
+          });
+  }, [roomNumber, roomPassword, useName])
+
+  const changeRoomNumber = (event) => {
+      if (isNaN(event.target.value)) {
+          alert('Enter only number')
+          return;
+      }
+      setRoomNumber(event.target.value);
+  };
+
+  const changeRoomPassword = (event) => {
+      setRoomPassword(event.target.value);
+  };
+
+  const changeUserName = (event) => {
+    setUserName(event.target.value);
+  }
 
   return (
     <div className="channel__container">
@@ -47,38 +91,38 @@ function ChannelCreate() {
               수정 날짜 : 21-08-21
               구현 대기 중
              */}
-            {/* <div className="thumbnail__upload__btn">
-            <Button variant="contained" color="primary">
-              Profile Upload
-            </Button>
-          </div> */}
 
-            <div className="channel__title">
-              <Input type="string" placeholder="Channel Title" />
-            </div>
-            <div className="channel__userName">
-              <Input type="string" placeholder="User Name" />
-            </div>
-            <form
-              action=""
-              classsName={classes.root}
-              noValidate
-              autoComplate="off"
-            >
-              <TextField id="description" label="Contents" />
-            </form>
+            {/* 
+              <div className="thumbnail__upload__btn">
+              <Button variant="contained" color="primary">
+                Profile Upload
+              </Button>
+            </div> 
+            */}
+
+            <FormControl className={classes.formControl}>
+              {/*
+              <Select native onChange={handleChange}>
+                <option>Public</option>
+                <option>Primary</option>
+              </Select>
+              */}
+              <div className="channel__title">
+                <Input type="string" placeholder="Channel Number" onChange={changeRoomNumber} />
+              </div>
+              <div className="channel__userName">
+                <Input type="string" placeholder="User Name" onChange={changeUserName} />
+              </div>
+              <Input type="password" placeholder="Please enter your password" onChange={changeRoomPassword} />
+            </FormControl>
           </div>
 
-          <FormControl className={classes.formControl}>
-            <Select native onChange={handleChange}>
-              <option>Public</option>
-              <option>Primary</option>
-            </Select>
-            <Input type="password" placeholder="Please enter your password" />
-          </FormControl>
           <div className="channel__create__btn">
-            <Button variant="contained" color="primary" disableElevation>
+            <Button variant="contained" color="primary" onClick={saveClick}>
               Create
+            </Button>
+            <Button variant="outlined" onClick={onClose}>
+              X
             </Button>
           </div>
         </div>

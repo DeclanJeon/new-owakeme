@@ -3,7 +3,7 @@ import "../css/VideoCard.css";
 import { Button, Input, Avatar } from '@material-ui/core';
 import axios from 'axios';
 
-function VideoCard({ image, title, channel, views, timestamp, channelImage, roomNumber, makeUserName }) {
+function VideoCard({ channel, channelImage, roomNumber, makeUserName }) {
   const [enterPassword, setEnterPassword] = useState('');
   const [roomName, setRoomName] = useState('');
 
@@ -39,20 +39,17 @@ function VideoCard({ image, title, channel, views, timestamp, channelImage, room
           src={channelImage}
         />
         <div className="videoCard__text">
-          <h4>{title}</h4>
-          <p>{channel}</p>
-          <p>
-            {views} ● {timestamp}
-          </p>
-          
+          <h3>Room Number: {roomNumber}</h3>
           <Input
               onChange={onChangeEnterPassword}
               placeholder="Enter a Password"
             />
-          <span>Room Number: {roomNumber}</span>
-          <Button variant="contained" onClick={() => onEnterRoom()}>
-            Enter
-          </Button>
+          <b>Made by : {makeUserName}</b>
+          <div>
+            <Button variant="contained" onClick={() => onEnterRoom()}>
+              Enter
+            </Button>
+          </div>
         </div>
       </div>
     </div>

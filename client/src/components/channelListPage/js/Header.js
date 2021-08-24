@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import "../css/Header.css";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import VideoCallIcon from "@material-ui/icons/VideoCall";
 import AddIcon from "@material-ui/icons/Add";
-import AppsIcon from "@material-ui/icons/Apps";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import { Avatar } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -51,17 +49,17 @@ function Header() {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setOpen(true);
-  };
+  }, [open]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [open]);
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
-      <ChannelCreate />
+      <ChannelCreate onClose={handleClose}/>
     </div>
   );
 
