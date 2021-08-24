@@ -42,4 +42,4 @@ function ChannelUserList() {
     )
 }
 
-export default ChannelUserList
+export default React.memo(ChannelUserList)
