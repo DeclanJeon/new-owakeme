@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import Modal from '@material-ui/core/Modal';
 import RTMClient from '../rtm-client';
 import ChattingUsersAndMessage from './chattingUsersAndMessage';
 import Dropzone from 'react-dropzone';
@@ -11,22 +12,33 @@ import { saveAs } from 'file-saver';
 import "../assets/css/chat.css";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   messageArea: {
     height: '70vh',
     overflowY: 'auto'
+  },
+  paper: {
+    position: "absolute",
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3)
   }
-});
+}));
 
 const IMAGE_FORMAT = "\\.(bmp|gif|jpg|jpeg|png)$";
 
 const Chatting = () => {
   const classes = useStyles();
+
   const [chattingMessage, setChattingMessage] = useState("");
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
   const [location, setLocation] = useState([]);
   const [filePath, setFilePath] = useState("");
+  const [files, setFiles] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const channelName = useSelector((state) => state.channelReducer.channelName);
   const userName = useSelector((state) => state.userReducer.userName);
@@ -39,24 +51,28 @@ const Chatting = () => {
   useEffect(() => {
     localClient.init(process.env.REACT_APP_AGORA_APP_ID);
     localClient.login(userName, "", channelName);
-  }, [localClient]);
+  }, [userName, channelName]);
 
   const onDrop = useCallback((acceptedFiles) => {
-    acceptedFiles.map((files) => {
-      if (new RegExp(IMAGE_FORMAT, "i").test(files.name)) {
-        localClient
-          .sendChannelImageMediaMessage(files, channelName, files)
-          .then(() => {
-            alert("이미지 업로드 완료");
-          });
-      } else {
-        localClient
-          .sendChannelFileMediaMessage(files, channelName, files)
-          .then(() => {
-            alert("파일 업로드 완료");
-          });
-      }
-    });
+    setFiles(acceptedFiles);
+    setOpen(!open);
+    {/*
+      acceptedFiles.map((files) => {
+        if (new RegExp(IMAGE_FORMAT, "i").test(files.name)) {
+          localClient
+            .sendChannelImageMediaMessage(files, channelName, files)
+            .then(() => {
+              alert("이미지 업로드 완료");
+            });
+        } else {
+          localClient
+            .sendChannelFileMediaMessage(files, channelName, files)
+            .then(() => {
+              alert("파일 업로드 완료");
+            });
+        }
+      });
+    */}
   }, []);
 
   const onDropRejected = useCallback((error) => {
@@ -112,22 +128,53 @@ const Chatting = () => {
                 saveAs(r, fileName)
             })
         break;
-      case "FILE":
-        localClient.downloadChannelMedia(mediaId).then((r) => {
-          reader.readAsDataURL(r);
-          reader.onload = function (e) {
-            setFilePath(e.target.result);
-          };
-          saveAs(r, fileName);
-        });
-        break;
-      default:
-        setLocation([...location, "left"]);
-        setMessageStorage([...messageStorage, message]);
-        setUserStorage([...userStorage, user]);
-        break;
+        case "FILE":
+          localClient.downloadChannelMedia(mediaId).then((r) => {
+            saveAs(r, fileName);
+          });
+          break;
+        default:
+          setLocation([...location, "left"]);
+          setMessageStorage([...messageStorage, message]);
+          setUserStorage([...userStorage, user]);
+          break;
     }
   });
+
+  const downloadFile = useCallback(() => {
+    setOpen(false);
+    files.map((file) => {
+      if (new RegExp(IMAGE_FORMAT, "i").test(file.name)) {
+        localClient
+          .sendChannelImageMediaMessage(file, channelName, file);
+      } else {
+        localClient
+          .sendChannelFileMediaMessage(file, channelName, file);
+      }
+    });
+  }, [files]);
+
+  const handleClose = useCallback(() => {
+      setOpen(!open);
+  }, [open]);
+
+  const body = (
+    <div>
+        <h2>파일 전송</h2>
+        <h3>다음 파일을 전송합니다.</h3>
+        <ul>
+        {
+            files.map((file, index) => (
+                <li key={index}>{file.name}</li>
+            ))
+        }
+        </ul>
+        <span>
+            <button onClick={downloadFile}>확인</button>
+            <button onClick={handleClose}>취소</button>
+        </span>
+    </div>
+);
 
   return (
       <>
@@ -145,7 +192,7 @@ const Chatting = () => {
                                     messageStorage.map((message, index) => 
                                         (
                                             <ListItem key={index}>
-                                                <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} messageTime="09:30" />
+                                                <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} files={files} messageTime="09:30" />
                                             </ListItem>
                                         )
                                     )
@@ -153,6 +200,17 @@ const Chatting = () => {
                                     <></>
                                 }
                                 {filePath ? <img src={filePath} /> : <></>}
+                                <div>
+                                  {open && 
+                                    <Modal
+                                        open={open}
+                                        onClose={handleClose}
+                                        className={classes.paper}
+                                    >
+                                        {body}
+                                    </Modal>
+                                  }
+                                </div>
                             </div>
                         )}
                     </Dropzone>
