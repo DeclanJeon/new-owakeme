@@ -1,12 +1,12 @@
 import React from 'react';
 
-function chattingUsersAndMessage({location, userId, userMessage, messageTime }) {
+function chattingUsersAndMessage({location, userId, userMessage }) {
     return (
         <>
             <p className={`chat__message ${true && "chat__reciever"}`}>
                 <span className="chat__name">{userId}</span>
-                    {userMessage}
-                <span className="chat__timestamp">{messageTime}</span>
+                    {userMessage.message}
+                <span className="chat__timestamp">{userMessage.messageTime}</span>
             </p>
         </>
     )
