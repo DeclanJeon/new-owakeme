@@ -154,7 +154,7 @@ export default function SignIn() {
                 />
               </div>
               <div id="Create_Channel">
-                <Button onClick={onEnterChanel}>Join Channel</Button>
+                <Button onClick={onEnterChanel} style={{ width: '200px', height: '35px', borderRadius: '20px' }} >Join Channel</Button>
               </div>
             </div>
 
