@@ -8,7 +8,6 @@ function RecommendedVideo() {
 
   useEffect(() => {
     axios.get('/api/room/roomList').then(res => {
-      debugger;
       setRoomList(res.data.roomList);
     })
   }, [])
