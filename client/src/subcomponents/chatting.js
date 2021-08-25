@@ -11,6 +11,7 @@ import Dropzone from 'react-dropzone';
 import { saveAs } from 'file-saver';
 import "../assets/css/chat.css";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   messageArea: {
@@ -35,9 +36,9 @@ const Chatting = () => {
   const [chattingMessage, setChattingMessage] = useState("");
   const [messageStorage, setMessageStorage] = useState([]);
   const [userStorage, setUserStorage] = useState([]);
+  const [filesStorage, setFilesStorage] = useState([]);
   const [location, setLocation] = useState([]);
   const [filePath, setFilePath] = useState("");
-  const [files, setFiles] = useState([]);
   const [open, setOpen] = useState(false);
 
   const channelName = useSelector((state) => state.channelReducer.channelName);
@@ -51,7 +52,9 @@ const Chatting = () => {
   useEffect(() => {
     localClient.init(process.env.REACT_APP_AGORA_APP_ID);
     localClient.login(userName, "", channelName);
+  }, [localClient]);
 
+  useEffect(() => {
     localClient.on('ConnectionStateChanged', (newState, reason) => {
       
     })
@@ -74,6 +77,7 @@ const Chatting = () => {
         const mediaId = args[0].mediaId;
         const fileName = args[0].fileName;
         const user = args[1];
+        const today = moment();
         
         const reader = new FileReader();
         switch (messageType) {
@@ -93,57 +97,40 @@ const Chatting = () => {
             break;
           default:
             setLocation([...location, "left"]);
-            setMessageStorage([...messageStorage, message]);
+            setMessageStorage([...messageStorage, {message: message, messageTime: today.format("HH:mm")}]);
             setUserStorage([...userStorage, user]);
             break;
       }
     });
-  }, [userName, channelName]);
+  }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
-    setFiles(acceptedFiles);
+    setFilesStorage(acceptedFiles);
     setOpen(!open);
-    {/*
-      acceptedFiles.map((files) => {
-        if (new RegExp(IMAGE_FORMAT, "i").test(files.name)) {
-          localClient
-            .sendChannelImageMediaMessage(files, channelName, files)
-            .then(() => {
-              alert("이미지 업로드 완료");
-            });
-        } else {
-          localClient
-            .sendChannelFileMediaMessage(files, channelName, files)
-            .then(() => {
-              alert("파일 업로드 완료");
-            });
-        }
-      });
-    */}
   }, []);
 
   const onDropRejected = useCallback((error) => {
     alert(error[0].errors[0].code);
   }, []);
 
-  const onSendMessage = useCallback(
-    (e) => {
+  const onSendMessage = useCallback((e) => {
+      const today = moment();
+
       localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
         setChattingMessage("");
         setLocation([...location, "right"]);
-
-        setMessageStorage([...messageStorage, chattingMessage]);
+        setMessageStorage([...messageStorage, {message: chattingMessage, messageTime: today.format("HH:mm")}]);
         setUserStorage([...userStorage, userName]);
     })
   }, [chattingMessage, location, userStorage])
 
   const onChattingMessage = useCallback((e) => {
-      setChattingMessage(e.currentTarget.value)
+      setChattingMessage(e.currentTarget.value);
   }, [chattingMessage])
 
   const downloadFile = useCallback(() => {
     setOpen(false);
-    files.map((file) => {
+    filesStorage.map((file) => {
       if (new RegExp(IMAGE_FORMAT, "i").test(file.name)) {
         localClient
           .sendChannelImageMediaMessage(file, channelName, file);
@@ -152,7 +139,7 @@ const Chatting = () => {
           .sendChannelFileMediaMessage(file, channelName, file);
       }
     });
-  }, [files]);
+  }, [filesStorage]);
 
   const handleClose = useCallback(() => {
       setOpen(!open);
@@ -164,7 +151,7 @@ const Chatting = () => {
         <h3>다음 파일을 전송합니다.</h3>
         <ul>
         {
-            files.map((file, index) => (
+            filesStorage.map((file, index) => (
                 <li key={index}>{file.name}</li>
             ))
         }
@@ -192,14 +179,13 @@ const Chatting = () => {
                                     messageStorage.map((message, index) => 
                                         (
                                             <ListItem key={index}>
-                                                <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} files={files} messageTime="09:30" />
+                                                <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} />
                                             </ListItem>
                                         )
                                     )
                                 :
                                     <></>
                                 }
-                                {filePath ? <img src={filePath} /> : <></>}
                                 <div>
                                   {open && 
                                     <Modal
