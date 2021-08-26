@@ -12,6 +12,7 @@ import { saveAs } from 'file-saver';
 import "../assets/css/chat.css";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
 import moment from 'moment';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   messageArea: {
@@ -40,6 +41,7 @@ const Chatting = () => {
   const [location, setLocation] = useState([]);
   const [filePath, setFilePath] = useState("");
   const [open, setOpen] = useState(false);
+  const [isFileLoading, setIsFileLoading] = useState(false);
 
   const channelName = useSelector((state) => state.channelReducer.channelName);
   const userName = useSelector((state) => state.userReducer.userName);
@@ -72,6 +74,8 @@ const Chatting = () => {
     })
   
     localClient.on('ChannelMessage', async ({ channelName, args }) => {
+        setIsFileLoading(true);
+
         const message = args[0].text;
         const messageType = args[0].messageType;
         const mediaId = args[0].mediaId;
@@ -87,11 +91,14 @@ const Chatting = () => {
                   reader.onload = function(e) {
                       setFilePath(e.target.result)
                   }
-                  saveAs(r, fileName)
+
+                  setIsFileLoading(false);
+                  saveAs(r, fileName);
               })
           break;
           case "FILE":
             localClient.downloadChannelMedia(mediaId).then((r) => {
+              setIsFileLoading(false);
               saveAs(r, fileName);
             });
             break;
@@ -128,9 +135,10 @@ const Chatting = () => {
       setChattingMessage(e.currentTarget.value);
   }, [chattingMessage])
 
-  const downloadFile = useCallback(() => {
+  const uploadFile = useCallback(async () => {
     setOpen(false);
-    filesStorage.map((file) => {
+
+    await Promise.all(filesStorage.map((file) => {
       if (new RegExp(IMAGE_FORMAT, "i").test(file.name)) {
         localClient
           .sendChannelImageMediaMessage(file, channelName, file);
@@ -138,7 +146,8 @@ const Chatting = () => {
         localClient
           .sendChannelFileMediaMessage(file, channelName, file);
       }
-    });
+    }));
+
   }, [filesStorage]);
 
   const handleClose = useCallback(() => {
@@ -157,7 +166,7 @@ const Chatting = () => {
         }
         </ul>
         <span>
-            <button onClick={downloadFile}>확인</button>
+            <button onClick={uploadFile}>확인</button>
             <button onClick={handleClose}>취소</button>
         </span>
     </div>
@@ -167,6 +176,8 @@ const Chatting = () => {
       <>
         <div className="chat__body">
             <div className="inner__body__container">
+                {isFileLoading && <CircularProgress />}
+
                 <List className={classes.messageArea}>
                     <Dropzone
                         onDrop={onDrop}
