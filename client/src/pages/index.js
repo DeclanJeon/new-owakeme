@@ -9,11 +9,9 @@ import { channelEnter } from "../reducer/actions/channel";
 import { setDeviceList } from "../reducer/actions/deviceList";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
-import { googleLogIn } from "../reducer/actions/user";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import QueueIcon from "@material-ui/icons/Queue";
 import "../assets/css/mainpage.css";
-import { AppBar } from "@material-ui/core/AppBar";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -48,47 +46,18 @@ export default function SignIn() {
   const [channelName, setChannelName] = useState("");
   const [userName, setUserName] = useState("");
 
-  const onChanelName = useCallback(
-    (e) => {
+  const onChanelName = useCallback((e) => {
       setChannelName(e.currentTarget.value);
-    },
-    [channelName]
-  );
+    }, [channelName]);
 
-  const onUserName = useCallback(
-    (e) => {
+  const onUserName = useCallback((e) => {
       setUserName(e.currentTarget.value);
-    },
-    [userName]
-  );
-
-  // 구글 로그인
-  const onGoogleLoginSuccess = useCallback((e) => {
-    if(channelName === ''){
-      return alert("Please enter the channelName");
-    }
-
-    dispatch(channelEnter(channelName))
-    dispatch(googleLogIn(e.profileObj.name))
-
-    const param = {
-      channelName: channelName,
-      userName: e.profileObj.name
-    };
-
-    axios.post('/api/save/roomUserName', param)
-      .then((res) => {
-        if(res.data.success === true){
-          routerCtx.history.push({ pathname: `/meeting` });
-        }
-      });
-    },
-    [userName, channelName]
-  );
+    }, [userName]);
 
   // 일반 로그인
-  const onEnterChanel = useCallback(
-    (e) => {
+  const onEnterChanel = useCallback((e) => {
+      debugger;
+      console.log(userName);
       if (channelName === "") {
         return alert("Please enter the channelName");
       }
@@ -109,9 +78,7 @@ export default function SignIn() {
           routerCtx.history.push({ pathname: `/meeting` });
         }
       });
-    },
-    [userName, channelName]
-  );
+    }, [userName, channelName]);
 
   const roomList = useCallback(() => {
     routerCtx.history.push({ pathname: `/channelList` });
@@ -151,14 +118,16 @@ export default function SignIn() {
                   id="Name_Your_Channel_input"
                   placeholder="User Name"
                   onChange={onUserName}
+                  value={userName}
                 />
               </div>
               <div id="Create_Channel">
                 <Button onClick={onEnterChanel} style={{ width: '200px', height: '35px', borderRadius: '20px' }} >Join Channel</Button>
               </div>
+              <div>
+                <GoogleLoginForm setUserName={setUserName} />
+              </div>
             </div>
-
-            {/* <GoogleLoginForm onGoogleLoginSuccess={onGoogleLoginSuccess} /> */}
           </div>
 
           <div className="icon__btn__container">
