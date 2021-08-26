@@ -13,6 +13,7 @@
 
 # config
 /src/config/firebaseConfig.js
+/src/config/firebaseUiConfig.js
 
 # misc
 .DS_Store
