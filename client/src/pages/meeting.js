@@ -10,7 +10,6 @@ import { micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOu
 import useRouter from '../utils/use-router';
 import axios from 'axios';
 import { userLogOut } from '../reducer/actions/user';
-import GoogleLogoutForm from '../components/googleLogoutForm';
 import "../assets/css/meeting.css";
 import "../assets/css/navigator.css";
 
@@ -132,7 +131,6 @@ const Room = () => {
               </div>
               <div className="view_out">
                 <IonIcon icon={logOutOutline} onClick={onLeaveChannel} />
-                {/* <GoogleLogoutForm /> */}
               </div>
             </div>
           </div>
