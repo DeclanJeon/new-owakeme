@@ -56,8 +56,6 @@ export default function SignIn() {
 
   // 일반 로그인
   const onEnterChanel = useCallback((e) => {
-      debugger;
-      console.log(userName);
       if (channelName === "") {
         return alert("Please enter the channelName");
       }
