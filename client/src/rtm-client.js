@@ -119,11 +119,11 @@ export default class RTMClient extends EventEmitter {
       // thumbnailWidth: 50,
       // thumbnailHeight: 200, 
     })
+
     return this.channels[channelName].channel.sendMessage(mediaMessage)
   }
 
   async sendChannelFileMediaMessage (blob, channelName, files) {
-    console.log('sendChannelFileMessage', blob, channelName)
     if (!this.channels[channelName] || !this.channels[channelName].joined) return
     const mediaMessage = await this.client.createMediaMessageByUploading(blob, {
       messageType: "FILE",
@@ -135,6 +135,7 @@ export default class RTMClient extends EventEmitter {
       // thumbnailWidth: 50,
       // thumbnailHeight: 200, 
     })
+
     return this.channels[channelName].channel.sendMessage(mediaMessage)
   }
 
