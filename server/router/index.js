@@ -9,7 +9,7 @@ require('firebase/firestore');
 const client = redis.createClient();
 client.on("error", function(err, data){
     if(err) throw err;
-})
+});
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -29,7 +29,7 @@ router.post('/save/roomUserName', (req, res) =>{
     return res.status(200).json({
         success: true
     })
-})
+});
 
 router.post('/get/roomUserName', (req, res) => {
     const bodyData = req.body;
@@ -47,7 +47,7 @@ router.post('/get/roomUserName', (req, res) => {
             userList: items
         })
     });
-})
+});
 
 router.post('/remove/roomUserName', (req, res) => {
     const bodyData = req.body;
@@ -62,7 +62,7 @@ router.post('/remove/roomUserName', (req, res) => {
         })
     }
     
-})
+});
 
 router.post('/room/register', (req, res) => {
     const bodyData = req.body;
@@ -83,7 +83,7 @@ router.post('/room/register', (req, res) => {
             error: err
         });
     })
-})
+});
 
 router.get('/room/roomList', (req, res) => {
     const roomArray = []
@@ -103,6 +103,32 @@ router.get('/room/roomList', (req, res) => {
             error: err
         })
     })
-})
+});
+
+router.post('/room/getRoomInfo', (req, res) => {
+    const bodyData = req.body;
+
+    db.collection("RoomList").where("roomNumber", "==", bodyData.channelName)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                if(bodyData.roomPassword === doc.data().roomPassword){
+                    return res.status(200).json({
+                        passwordCheckResult : true
+                    });
+                }else{
+                    return res.status(200).json({
+                        passwordCheckResult : false,
+                        error: 'Wrong Password'
+                    });
+                }
+            });
+        }).catch((err) => {
+            return res.status(500).json({
+                passwordCheckResult: false,
+                error: err
+            })
+        })
+});
 
 module.exports = router;
