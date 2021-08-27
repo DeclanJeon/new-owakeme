@@ -2,23 +2,27 @@ import React, { useCallback, useState } from "react";
 import "../css/VideoCard.css";
 import { Button, Input, Avatar } from '@material-ui/core';
 import axios from 'axios';
+import useRouter from "../../../utils/use-router";
 
 function VideoCard({ channel, channelImage, roomNumber, makeUserName }) {
+  const routerCtx = useRouter();
   const [enterPassword, setEnterPassword] = useState('');
-  const [roomName, setRoomName] = useState('');
 
   const onEnterRoom = useCallback((roomName) => {
     //비밀번호 확인
     const body = {
-      channelName: roomName,
+      channelName: roomNumber,
       roomPassword: enterPassword
     }
     axios.post('/api/room/getRoomInfo', body).then(res => {
-      if (!res.data.passwordCheckResult) {
-        return
+      if (res.data.passwordCheckResult) {
+        routerCtx.history.push({ pathname: `/meeting` });
+      }else{
+        alert(res.data.error);
+        setEnterPassword('');
       }
-    })
-  }, [roomName, enterPassword]);
+    });
+  }, [enterPassword]);
 
   const onChangeEnterPassword = useCallback((e) => {
     setEnterPassword(e.target.value);
@@ -43,10 +47,11 @@ function VideoCard({ channel, channelImage, roomNumber, makeUserName }) {
           <Input
               onChange={onChangeEnterPassword}
               placeholder="Enter a Password"
+              value={enterPassword}
             />
           <b>Made by : {makeUserName}</b>
           <div>
-            <Button variant="contained" onClick={() => onEnterRoom()}>
+            <Button variant="contained" onClick={onEnterRoom}>
               Enter
             </Button>
           </div>
