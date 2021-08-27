@@ -13,26 +13,6 @@ import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import QueueIcon from "@material-ui/icons/Queue";
 import "../assets/css/mainpage.css";
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
-
 export default function SignIn() {
   const routerCtx = useRouter();
   const dispatch = useDispatch();
@@ -45,10 +25,15 @@ export default function SignIn() {
 
   const [channelName, setChannelName] = useState("");
   const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
 
   const onChanelName = useCallback((e) => {
       setChannelName(e.currentTarget.value);
     }, [channelName]);
+
+  const onPassword = useCallback((e) => {
+      setPassword(e.currentTarget.value);
+    }, [password]);
 
   const onUserName = useCallback((e) => {
       setUserName(e.currentTarget.value);
@@ -68,15 +53,25 @@ export default function SignIn() {
 
       const param = {
         channelName: channelName,
+        roomPassword: password,
         userName: userName,
       };
+      
+      axios.post('/api/room/getRoomInfo', param).then(res => {
+        if (res.data.passwordCheckResult) {
+          
+          axios.post("/api/save/roomUserName", param).then((res) => {
+            if (res.data.success === true) {
+              routerCtx.history.push({ pathname: `/meeting` });
+            }
+          });
 
-      axios.post("/api/save/roomUserName", param).then((res) => {
-        if (res.data.success === true) {
-          routerCtx.history.push({ pathname: `/meeting` });
+        }else{
+          alert(res.data.error);
+          setPassword('');
         }
       });
-    }, [userName, channelName]);
+    }, [userName, password, channelName]);
 
   const roomList = useCallback(() => {
     routerCtx.history.push({ pathname: `/channelList` });
@@ -109,6 +104,13 @@ export default function SignIn() {
                   id="Name_Your_Channel_input"
                   placeholder="Name Your Channel"
                   onChange={onChanelName}
+                />
+              </div>
+              <div id="Name_Password">
+                <input
+                  id="Name_Your_Channel_input"
+                  placeholder="Password"
+                  onChange={onPassword}
                 />
               </div>
               <div>
