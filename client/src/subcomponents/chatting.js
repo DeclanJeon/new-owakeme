@@ -74,8 +74,6 @@ const Chatting = () => {
     })
   
     localClient.on('ChannelMessage', async ({ channelName, args }) => {
-        setIsFileLoading(true);
-
         const message = args[0].text;
         const messageType = args[0].messageType;
         const mediaId = args[0].mediaId;
@@ -86,6 +84,7 @@ const Chatting = () => {
         const reader = new FileReader();
         switch (messageType) {
           case 'IMAGE':
+              setIsFileLoading(true);
               localClient.downloadChannelMedia(mediaId).then((r) => {
                   reader.readAsDataURL(r);
                   reader.onload = function(e) {
@@ -97,6 +96,7 @@ const Chatting = () => {
               })
           break;
           case "FILE":
+            setIsFileLoading(true);
             localClient.downloadChannelMedia(mediaId).then((r) => {
               setIsFileLoading(false);
               saveAs(r, fileName);
@@ -109,7 +109,7 @@ const Chatting = () => {
             break;
       }
     });
-  }, []);
+  }, [messageStorage, userStorage, location]);
 
   const onDrop = useCallback((acceptedFiles) => {
     setFilesStorage(acceptedFiles);
