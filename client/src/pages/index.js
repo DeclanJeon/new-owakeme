@@ -102,7 +102,7 @@ export default function SignIn() {
               <div id="Name_Your_Channel">
                 <input
                   id="Name_Your_Channel_input"
-                  placeholder="Name Your Channel"
+                  placeholder="Your Channel"
                   onChange={onChanelName}
                 />
               </div>

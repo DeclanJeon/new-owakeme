@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
@@ -13,6 +13,7 @@ import "../assets/css/chat.css";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
 import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { ChannelChatting } from '../reducer/actions/chatting';
 
 const useStyles = makeStyles((theme) => ({
   messageArea: {
@@ -35,16 +36,16 @@ const Chatting = () => {
   const classes = useStyles();
 
   const [chattingMessage, setChattingMessage] = useState("");
-  const [messageStorage, setMessageStorage] = useState([]);
-  const [userStorage, setUserStorage] = useState([]);
   const [filesStorage, setFilesStorage] = useState([]);
-  const [location, setLocation] = useState([]);
+  //const [location, setLocation] = useState([]);
   const [filePath, setFilePath] = useState("");
   const [open, setOpen] = useState(false);
   const [isFileLoading, setIsFileLoading] = useState(false);
 
   const channelName = useSelector((state) => state.channelReducer.channelName);
   const userName = useSelector((state) => state.userReducer.userName);
+  const { channel, userNames, messages, messageTimes, tracks } = useSelector((state) => state.chattingReducer.messageStore);
+  const dispatch = useDispatch();
 
   const localClient = useMemo(() => {
     const client = new RTMClient();
@@ -90,31 +91,31 @@ const Chatting = () => {
                   reader.onload = function(e) {
                       setFilePath(e.target.result)
                   }
-
-                  setIsFileLoading(false);
                   saveAs(r, fileName);
+                  setIsFileLoading(false);
               })
           break;
           case "FILE":
             setIsFileLoading(true);
             localClient.downloadChannelMedia(mediaId).then((r) => {
-              setIsFileLoading(false);
               saveAs(r, fileName);
+              setIsFileLoading(false);
             });
             break;
           default:
-            setLocation([...location, "left"]);
-            setMessageStorage([...messageStorage, {message: message, messageTime: today.format("HH:mm")}]);
-            setUserStorage([...userStorage, user]);
+            //setLocation([...location, "left"]);
+            //setMessageStorage([...messageStorage, {message: message, messageTime: today.format("HH:mm")}]);
+            //setUserStorage([...userStorage, user]);
+            dispatch(ChannelChatting(channelName, user, message, today.format("HH:mm"), 'remote'));
             break;
       }
     });
-  }, [messageStorage, userStorage, location]);
+  }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
     setFilesStorage(acceptedFiles);
     setOpen(!open);
-  }, []);
+  }, [filesStorage, open]);
 
   const onDropRejected = useCallback((error) => {
     alert(error[0].errors[0].code);
@@ -124,12 +125,10 @@ const Chatting = () => {
       const today = moment();
 
       localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
+        dispatch(ChannelChatting(channelName, userName, chattingMessage, today.format("HH:mm"), 'local'));
         setChattingMessage("");
-        setLocation([...location, "right"]);
-        setMessageStorage([...messageStorage, {message: chattingMessage, messageTime: today.format("HH:mm")}]);
-        setUserStorage([...userStorage, userName]);
-    })
-  }, [chattingMessage, location, userStorage])
+      })
+  }, [chattingMessage])
 
   const onChattingMessage = useCallback((e) => {
       setChattingMessage(e.currentTarget.value);
@@ -137,7 +136,7 @@ const Chatting = () => {
 
   const uploadFile = useCallback(async () => {
     setOpen(false);
-
+    
     await Promise.all(filesStorage.map((file) => {
       if (new RegExp(IMAGE_FORMAT, "i").test(file.name)) {
         localClient
@@ -148,7 +147,7 @@ const Chatting = () => {
       }
     }));
 
-  }, [filesStorage]);
+  }, [open]);
 
   const handleClose = useCallback(() => {
       setOpen(!open);
@@ -186,14 +185,14 @@ const Chatting = () => {
                     >
                         {({getRootProps}) => (
                             <div {...getRootProps()} className={classes.messageArea}>
-                                {messageStorage.length ?
-                                    messageStorage.map((message, index) => 
-                                        (
-                                            <ListItem key={index}>
-                                                <ChattingUsersAndMessage location={location[index]} userId={userStorage[index]} userMessage={message} />
-                                            </ListItem>
-                                        )
-                                    )
+                              {messages.length ?
+                                  messages.map((message, index) => 
+                                      (
+                                          <ListItem key={index}>
+                                              <ChattingUsersAndMessage userId={userNames[index]} userMessage={message} messageTime={messageTimes[index]} track={tracks[index]} />
+                                          </ListItem>
+                                      )
+                                  )
                                 :
                                     <></>
                                 }
