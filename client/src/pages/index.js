@@ -108,8 +108,9 @@ export default function SignIn() {
               </div>
               <div id="Name_Password">
                 <input
-                  id="Name_Your_Channel_input"
+                  id="Name_Password_input"
                   placeholder="Password"
+                  type="password"
                   onChange={onPassword}
                 />
               </div>
