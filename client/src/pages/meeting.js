@@ -86,7 +86,13 @@ const Room = () => {
         routerCtx.history.push({ pathname: '/' })
       }
     })
-  }, [])
+  }, []);
+
+  window.onbeforeunload = function() {
+    onLeaveChannel();
+
+    return "";
+  };
 
   return (
     <> 
