@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import FirebaseConfig from '../config/firebaseConfig';
 import FirebaseUiConfig from '../config/firebaseUiConfig';
 import { GoogleLogout } from 'react-google-login';
 import "../assets/css/google.css";
+import { userLogIn, userLogOut } from "../reducer/actions/user";
 
 const GoogleLoginForm = ({ setUserName }) => {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const dispatch = useDispatch();
 
     // initializeApp 두번 호출하는 부분 조심하기
     if (!firebase.apps.length) {
@@ -20,7 +23,8 @@ const GoogleLoginForm = ({ setUserName }) => {
     
     useEffect(() => {
         if(isSignedIn){
-            console.log(firebase.auth().currentUser.photoURL)
+            dispatch(userLogIn(firebase.auth().currentUser.displayName))
+            console.log(firebase.auth().currentUser.photoURL);
             setUserName(firebase.auth().currentUser.displayName);
         }
 
@@ -43,7 +47,10 @@ const GoogleLoginForm = ({ setUserName }) => {
                 className="googleLogout"
                 clientId={googleClientId}
                 buttonText="Sign out with Google"
-                onLogoutSuccess={() => firebase.auth().signOut()}
+                onLogoutSuccess={() => {
+                    dispatch(userLogOut());
+                    firebase.auth().signOut();
+                }}
             >
             </GoogleLogout>
         </div>

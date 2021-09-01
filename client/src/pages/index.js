@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import useRouter from "../utils/use-router";
 import { Button } from "@material-ui/core";
 import GoogleLoginForm from "../components/googleLoginForm";
-import { userLogIn } from "../reducer/actions/user";
 import { channelEnter } from "../reducer/actions/channel";
 import { setDeviceList } from "../reducer/actions/deviceList";
 import AgoraRTC from "agora-rtc-sdk-ng";
@@ -15,6 +14,7 @@ import "../assets/css/mainpage.css";
 
 export default function SignIn() {
   const routerCtx = useRouter();
+  const isLogin = useSelector(state => state.userReducer.isLogin);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -48,13 +48,12 @@ export default function SignIn() {
         return alert("Please enter the userName");
       }
 
-      dispatch(userLogIn(userName));
       dispatch(channelEnter(channelName));
 
       const param = {
         channelName: channelName,
         roomPassword: password,
-        userName: userName,
+        userName: userName
       };
       
       axios.post('/api/room/getRoomInfo', param).then(res => {
@@ -99,32 +98,37 @@ export default function SignIn() {
               />
             </div>
             <div className="right_btn_container">
-              <div id="Name_Your_Channel">
-                <input
-                  id="Name_Your_Channel_input"
-                  placeholder="Your Channel"
-                  onChange={onChanelName}
-                />
-              </div>
-              <div id="Name_Password">
-                <input
-                  id="Name_Password_input"
-                  placeholder="Password"
-                  type="password"
-                  onChange={onPassword}
-                />
-              </div>
-              <div>
-                <input
-                  id="Name_Your_Channel_input"
-                  placeholder="User Name"
-                  onChange={onUserName}
-                  value={userName}
-                />
-              </div>
-              <div id="Create_Channel">
-                <Button onClick={onEnterChanel} style={{ width: '200px', height: '35px', borderRadius: '20px' }} >Join Channel</Button>
-              </div>
+              {isLogin &&
+                <> 
+                  <div id="Name_Your_Channel">
+                    <input
+                      id="Name_Your_Channel_input"
+                      placeholder="Name Your Channel"
+                      onChange={onChanelName}
+                    />
+                  </div>
+                  <div id="Name_Password">
+                    <input
+                      id="Name_Password_input"
+                      placeholder="Password"
+                      type="password"
+                      onChange={onPassword}
+                    />
+                  </div>
+                  <div>
+                    <input
+                      id="Name_Your_Channel_input"
+                      placeholder="User Name"
+                      onChange={onUserName}
+                      value={userName}
+                      disabled="true"
+                    />
+                  </div>
+                  <div id="Create_Channel">
+                    <Button onClick={onEnterChanel} style={{ width: '200px', height: '35px', borderRadius: '20px' }} >Join Channel</Button>
+                  </div>
+                </>
+              }
               <div>
                 <GoogleLoginForm setUserName={setUserName} />
               </div>

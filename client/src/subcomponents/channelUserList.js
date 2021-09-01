@@ -8,7 +8,7 @@ import axios from 'axios';
 function ChannelUserList() {
     const [userNameList, setUserNameList] = useState([]);
     const channelName = useSelector(state => state.channelReducer.channelName);
-    const { googleLogin, googleLogOut, isLogin, isLogout } = useSelector(state => state.userReducer);
+    const { isLogin, isLogout } = useSelector(state => state.userReducer);
 
     useEffect(() => {
         const param = {
@@ -22,7 +22,7 @@ function ChannelUserList() {
                 alert(res.data.err);
             }
         })
-    }, [{ googleLogin, googleLogOut, isLogin, isLogout }])
+    }, [{ isLogin, isLogout }])
     
     return (
         <>
@@ -30,7 +30,7 @@ function ChannelUserList() {
                 return (
                         <div key={index}>
                             <ListItemAvatar align="left">
-                                <Avatar src="https://lh3.googleusercontent.com/a/AATXAJxrlIg3OBE7ycrVBlOUKeeaCC1elPsTmlt1U0Ss=s96-c">
+                                <Avatar src="">
                                     {userName}
                                 </Avatar>
                             </ListItemAvatar>
