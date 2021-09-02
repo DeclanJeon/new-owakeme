@@ -9,7 +9,7 @@ import { setDeviceList } from "../reducer/actions/deviceList";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
-import QueueIcon from "@material-ui/icons/Queue";
+import { IconButton } from '@material-ui/core';
 import "../assets/css/mainpage.css";
 
 export default function SignIn() {
@@ -72,7 +72,7 @@ export default function SignIn() {
       });
     }, [userName, password, channelName]);
 
-  const roomList = useCallback(() => {
+  const onRoomList = useCallback(() => {
     routerCtx.history.push({ pathname: `/channelList` });
   }, [])
 
@@ -136,8 +136,9 @@ export default function SignIn() {
           </div>
 
           <div className="icon__btn__container">
-            <LibraryBooksIcon onClick={roomList} />
-            {/* <QueueIcon /> */}
+            <IconButton color="primary" disabled={!isLogin&&true}>
+              <LibraryBooksIcon onClick={onRoomList} />
+            </IconButton>
           </div>
 
           <div id="footer">
