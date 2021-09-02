@@ -46,7 +46,7 @@ const GoogleLoginForm = ({ setUserName }) => {
             <GoogleLogout
                 className="googleLogout"
                 clientId={googleClientId}
-                buttonText="Sign out with Google"
+                buttonText="Sign out"
                 onLogoutSuccess={() => {
                     dispatch(userLogOut());
                     firebase.auth().signOut();
