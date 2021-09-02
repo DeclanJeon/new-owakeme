@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
 import useRouter from "../utils/use-router";
 import { Button } from "@material-ui/core";
 import GoogleLoginForm from "../components/googleLoginForm";
@@ -26,6 +25,21 @@ export default function SignIn() {
   const [channelName, setChannelName] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const videoPreview = document.getElementById("videoPreview");
+    async function getMedia() {
+      try{
+          videoPreview.srcObject = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: true
+          });
+      }catch(e){
+          console.log(e);
+      }
+    };
+    getMedia();
+  }, []);
 
   const onChanelName = useCallback((e) => {
       setChannelName(e.currentTarget.value);
@@ -91,11 +105,7 @@ export default function SignIn() {
 
           <div className="btn_container">
             <div className="left_image_container">
-              <img
-                src="https://cdn.pixabay.com/photo/2016/03/09/09/17/girl-1245713__340.jpg"
-                alt=""
-                style={{ width: "300px" }}
-              />
+              <video id="videoPreview" autoPlay width="400px" />
             </div>
             <div className="right_btn_container">
               {isLogin &&
@@ -136,8 +146,8 @@ export default function SignIn() {
           </div>
 
           <div className="icon__btn__container">
-            <IconButton color="primary" disabled={!isLogin&&true}>
-              <LibraryBooksIcon onClick={onRoomList} />
+            <IconButton color="primary" disabled={!isLogin&&true} onClick={onRoomList}>
+              <LibraryBooksIcon />
             </IconButton>
           </div>
 

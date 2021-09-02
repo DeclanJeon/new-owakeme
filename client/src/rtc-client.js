@@ -7,14 +7,12 @@ let screenTrack = null;
 
 export default function RTCClient(client) {
   const channelName = useSelector(state => state.channelReducer.channelName);
-  const userName = useSelector(state => state.userReducer.userName)
-  const cameraId = useSelector(state => state.deviceReducer.cameraId)
-  const audioId = useSelector(state => state.deviceReducer.audioId)
+  const cameraId = useSelector(state => state.deviceReducer.cameraId);
+  const audioId = useSelector(state => state.deviceReducer.audioId);
   
   const [localVideoTrack, setLocalVideoTrack] = useState(undefined)
   const [localAudioTrack, setLocalAudioTrack] = useState(undefined)
   const [remoteUsers, setRemoteUsers] = useState([]);
-  const dispatch = useDispatch();
 
   async function createLocalTracks() {
     const microphoneTrack = await AgoraRTC.createMicrophoneAudioTrack({ AEC: true, AGC: true, ANS: true, audioId: audioId });
@@ -77,14 +75,6 @@ export default function RTCClient(client) {
     
   }
 
-  function onUseRtcMic(useYn) {
-    localAudioTrack.setMuted(useYn);
-  }
-
-  function onUseRtcVideoCam(useYn) {
-    localVideoTrack.setMuted(useYn);
-  }
-
   useEffect(() => {
     if (!client) return;
     join();
@@ -125,8 +115,6 @@ export default function RTCClient(client) {
     localAudioTrack,
     remoteUsers,
     share,
-    leave,
-    onUseRtcMic,
-    onUseRtcVideoCam
+    leave
   };
 }

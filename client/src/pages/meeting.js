@@ -40,14 +40,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-//const client = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
 let shareTrack = undefined;
 
 const Room = () => {
   const classes = useStyles();
   const routerCtx = useRouter();
   const channelName = useSelector(state => state.channelReducer.channelName);
-  const { userName, googleLogin } = useSelector(state => state.userReducer);
+  const { userName } = useSelector(state => state.userReducer);
   const [useMic, setUseMic] = useState(true);
   const [useVideocam, setUseVideocam] = useState(true);
   const dispatch = useDispatch();
@@ -57,7 +56,7 @@ const Room = () => {
   }, [])
 
   const {
-    localVideoTrack, localAudioTrack, remoteUsers, share, leave, onUseRtcMic, onUseRtcVideoCam
+    localVideoTrack, localAudioTrack, remoteUsers, share, leave
   } = RTCClient(client);
   
   const onMic = () => {
@@ -92,7 +91,7 @@ const Room = () => {
     onLeaveChannel();
 
     return "";
-  };
+  };	    	
 
   return (
     <> 
