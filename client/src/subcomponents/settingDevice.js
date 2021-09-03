@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
@@ -14,6 +14,9 @@ const useStyle = makeStyles({
 const SettingDevice = () => {
     const classes = useStyle();
     const devices = useSelector(state => state.deviceReducer.deviceList);
+    const [audioDevices, setAudioDevices] = useState(devices.filter(device => device.kind == "audioinput"));
+    const [videoDevices, setVideoDevices] = useState(devices.filter(device => device.kind == "videoinput"));
+    debugger;
     const dispatch = useDispatch();
     
     const selectVideo = useCallback((e) => {
@@ -31,11 +34,10 @@ const SettingDevice = () => {
                     <InputLabel>Video</InputLabel>
                     <Select
                         onChange={selectVideo}
+                        value={videoDevices[0].deviceId}
                     >
-                        {devices.map((obj) => {
-                            if(obj.kind === 'videoinput'){
-                                return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
-                            }
+                        {videoDevices.map((obj) => {
+                            return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
                         })}
                     </Select>
                 </FormControl>
@@ -45,11 +47,10 @@ const SettingDevice = () => {
                     <InputLabel>Audio</InputLabel>
                     <Select
                         onChange={selectAudio}
+                        value={audioDevices[0].deviceId}
                     >
-                        {devices.map((obj) => {
-                            if(obj.kind === 'audioinput'){
-                                return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
-                            }
+                        {audioDevices.map((obj) => {
+                            return <MenuItem value={obj.deviceId} key={obj.deviceId} >{obj.label}</MenuItem>
                         })}
                     </Select>
                 </FormControl>
