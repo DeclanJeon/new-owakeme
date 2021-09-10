@@ -12,7 +12,6 @@ import { saveAs } from 'file-saver';
 import "../assets/css/chat.css";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
 import moment from 'moment';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { ChannelChatting } from '../reducer/actions/chatting';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,14 +36,12 @@ const Chatting = () => {
 
   const [chattingMessage, setChattingMessage] = useState("");
   const [filesStorage, setFilesStorage] = useState([]);
-  //const [location, setLocation] = useState([]);
-  const [filePath, setFilePath] = useState("");
   const [open, setOpen] = useState(false);
   const [isFileLoading, setIsFileLoading] = useState(false);
 
   const channelName = useSelector((state) => state.channelReducer.channelName);
   const userName = useSelector((state) => state.userReducer.userName);
-  const { channel, userNames, messages, messageTimes, tracks } = useSelector((state) => state.chattingReducer.messageStore);
+  const { userNames, messages, messageTimes, tracks, fileStorage } = useSelector((state) => state.chattingReducer.messageStore);
   const dispatch = useDispatch();
 
   const localClient = useMemo(() => {
@@ -59,57 +56,44 @@ const Chatting = () => {
 
   useEffect(() => {
     localClient.on('ConnectionStateChanged', (newState, reason) => {
-      
-    })
-  
-    localClient.on('MessageFromPeer', async (message, peerId) => {
-        
+
     })
   
     localClient.on('MemberJoined', ({ channelName, args }) => {
-        
+      
     })
   
     localClient.on('MemberLeft', ({ channelName, args }) => {
-        
+
     })
   
     localClient.on('ChannelMessage', async ({ channelName, args }) => {
         const message = args[0].text;
         const messageType = args[0].messageType;
-        const mediaId = args[0].mediaId;
-        const fileName = args[0].fileName;
         const user = args[1];
         const today = moment();
         
-        const reader = new FileReader();
         switch (messageType) {
           case 'IMAGE':
-              setIsFileLoading(true);
-              localClient.downloadChannelMedia(mediaId).then((r) => {
-                  reader.readAsDataURL(r);
-                  reader.onload = function(e) {
-                      setFilePath(e.target.result)
-                  }
-                  saveAs(r, fileName);
-                  setIsFileLoading(false);
-              })
+              dispatch(ChannelChatting(channelName, user, '', today.format("HH:mm"), 'remote', args[0]));
           break;
           case "FILE":
-            setIsFileLoading(true);
-            localClient.downloadChannelMedia(mediaId).then((r) => {
-              saveAs(r, fileName);
-              setIsFileLoading(false);
-            });
+            dispatch(ChannelChatting(channelName, user, '', today.format("HH:mm"), 'remote', args[0]));
             break;
           default:
-            //setLocation([...location, "left"]);
-            //setMessageStorage([...messageStorage, {message: message, messageTime: today.format("HH:mm")}]);
-            //setUserStorage([...userStorage, user]);
-            dispatch(ChannelChatting(channelName, user, message, today.format("HH:mm"), 'remote'));
+            dispatch(ChannelChatting(channelName, user, message, today.format("HH:mm"), 'remote', ''));
             break;
       }
     });
+  }, []);
+
+  const onDownloadFile = useCallback((mediaId, fileName) => {
+    setIsFileLoading(true);
+    localClient.downloadChannelMedia(mediaId).then((r) => {
+      saveAs(r, fileName);
+      setIsFileLoading(false);
+    });
+    return true;
   }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -125,7 +109,7 @@ const Chatting = () => {
       const today = moment();
 
       localClient.sendChannelMessage(chattingMessage, channelName).then(() => {
-        dispatch(ChannelChatting(channelName, userName, chattingMessage, today.format("HH:mm"), 'local'));
+        dispatch(ChannelChatting(channelName, userName, chattingMessage, today.format("HH:mm"), 'local', ''));
         setChattingMessage("");
       })
   }, [chattingMessage])
@@ -135,8 +119,11 @@ const Chatting = () => {
   }, [chattingMessage])
 
   const uploadFile = useCallback(async () => {
+    const today = moment();
+
     setOpen(false);
-    
+    dispatch(ChannelChatting(channelName, userName, '', today.format("HH:mm"), 'local', filesStorage));
+
     await Promise.all(filesStorage.map((file) => {
       if (new RegExp(IMAGE_FORMAT, "i").test(file.name)) {
         localClient
@@ -175,8 +162,6 @@ const Chatting = () => {
       <>
         <div className="chat__body">
             <div className="inner__body__container">
-                {isFileLoading && <CircularProgress />}
-
                 <List className={classes.messageArea}>
                     <Dropzone
                         onDrop={onDrop}
@@ -189,7 +174,9 @@ const Chatting = () => {
                                   messages.map((message, index) => 
                                       (
                                           <ListItem key={index}>
-                                              <ChattingUsersAndMessage userId={userNames[index]} userMessage={message} messageTime={messageTimes[index]} track={tracks[index]} />
+                                              <ChattingUsersAndMessage userId={userNames[index]} userMessage={message} 
+                                                messageTime={messageTimes[index]} track={tracks[index]} fileStorage={fileStorage[index]}
+                                                onDownloadFile={onDownloadFile} fileLoading={isFileLoading} />
                                           </ListItem>
                                       )
                                   )
