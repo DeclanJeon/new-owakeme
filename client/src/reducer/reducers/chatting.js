@@ -6,7 +6,8 @@ const initState = {
         userNames: [],
         messages: [],
         messageTimes: [],
-        tracks: []
+        tracks: [],
+        fileStorage: []
     }
 }
 
@@ -19,6 +20,7 @@ const chattingReducer = (state = initState, action) => {
                 , messages: [...state.messageStore.messages, action.message] 
                 , messageTimes: [...state.messageStore.messageTimes, action.messageTime]
                 , tracks: [...state.messageStore.tracks, action.track]
+                , fileStorage: [...state.messageStore.fileStorage, action.fileStorage]
             }}
         default:
             return state
