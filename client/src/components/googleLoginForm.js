@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -32,7 +32,12 @@ const GoogleLoginForm = ({ setUserName }) => {
             setIsSignedIn(!!user);
         });
         return () => unregisterAuthObserver();
-    }, [isSignedIn])
+    }, [isSignedIn]);
+
+    const GoogleLogOut = useCallback(() => {
+        dispatch(userLogOut());
+        firebase.auth().signOut();
+    }, []);
 
     if(!isSignedIn){
         return (
@@ -41,16 +46,20 @@ const GoogleLoginForm = ({ setUserName }) => {
             </div>
         )  
     }
+
+    window.onbeforeunload = function() {
+      GoogleLogOut();
+
+       return "";
+    };
+
     return (
         <div>
             <GoogleLogout
                 className="googleLogout"
                 clientId={googleClientId}
                 buttonText="Sign out"
-                onLogoutSuccess={() => {
-                    dispatch(userLogOut());
-                    firebase.auth().signOut();
-                }}
+                onLogoutSuccess={GoogleLogOut}
             >
             </GoogleLogout>
         </div>
