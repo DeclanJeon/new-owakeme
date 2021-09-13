@@ -10,6 +10,7 @@ import "../assets/css/mainpage.css";
 import new_owake_logo_black from "../assets/img/new_owake_logo_black.svg";
 import main_join from "../assets/img/main_join.png";
 import main_list from "../assets/img/main_list.png";
+import demo from "../assets/img/demo.png";
 import CreateRoom from '../components/createRoom';
 
 export default function SignIn() {
@@ -92,6 +93,9 @@ export default function SignIn() {
       <div className="index_header">
         <div className="logo">
           <img src={new_owake_logo_black} />
+        </div>
+        <div className="demo">
+          <a href="https://url.kr/e1qs6g"><img src={demo} /></a>
         </div>
       </div>
       <div className="index_section">
