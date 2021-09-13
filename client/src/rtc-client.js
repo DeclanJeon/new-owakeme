@@ -7,16 +7,16 @@ let screenTrack = null;
 
 export default function RTCClient(client) {
   const channelName = useSelector(state => state.channelReducer.channelName);
-  const cameraId = useSelector(state => state.deviceReducer.cameraId);
-  const audioId = useSelector(state => state.deviceReducer.audioId);
+  const {audioId, cameraId, resolution} = useSelector(state => state.deviceReducer);
   
-  const [localVideoTrack, setLocalVideoTrack] = useState(undefined)
-  const [localAudioTrack, setLocalAudioTrack] = useState(undefined)
+  const [localVideoTrack, setLocalVideoTrack] = useState(undefined);
+  const [localAudioTrack, setLocalAudioTrack] = useState(undefined);
+  const [localUid, setLocalUid] = useState('');
   const [remoteUsers, setRemoteUsers] = useState([]);
 
   async function createLocalTracks() {
     const microphoneTrack = await AgoraRTC.createMicrophoneAudioTrack({ AEC: true, AGC: true, ANS: true, audioId: audioId });
-    const cameraTrack = await AgoraRTC.createCameraVideoTrack({ cameraId: cameraId });
+    const cameraTrack = await AgoraRTC.createCameraVideoTrack({ cameraId: cameraId, encoderConfig: resolution});
 
     setLocalVideoTrack(cameraTrack)
     setLocalAudioTrack(microphoneTrack)
@@ -27,7 +27,8 @@ export default function RTCClient(client) {
   async function join() {
     if (!client) return;
     const [microphoneTrack, cameraTrack] = await createLocalTracks();
-    await client.join(process.env.REACT_APP_AGORA_APP_ID, channelName, null);
+    const uid = await client.join(process.env.REACT_APP_AGORA_APP_ID, channelName, null);
+    setLocalUid(uid);
     await client.publish([microphoneTrack, cameraTrack]);
   }
 
@@ -58,7 +59,7 @@ export default function RTCClient(client) {
       screenClient = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
       await screenClient.join(process.env.REACT_APP_AGORA_APP_ID, channelName, null);
 
-      screenTrack = await AgoraRTC.createScreenVideoTrack({encoderConfig: "1080p_1"});
+      screenTrack = await AgoraRTC.createScreenVideoTrack({encoderConfig: resolution});
       await screenClient.publish(screenTrack);
 
       screenTrack.on("track-ended", () => {
@@ -90,7 +91,7 @@ export default function RTCClient(client) {
       //setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
     const handleUserLeft = (user) => {
-      //setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
+      setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
     const handleConnectionStateChange = (curState, prevState) => {
       
@@ -114,6 +115,7 @@ export default function RTCClient(client) {
     localVideoTrack,
     localAudioTrack,
     remoteUsers,
+    localUid,
     share,
     leave
   };
