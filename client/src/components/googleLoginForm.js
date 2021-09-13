@@ -23,8 +23,7 @@ const GoogleLoginForm = ({ setUserName }) => {
     
     useEffect(() => {
         if(isSignedIn){
-            dispatch(userLogIn(firebase.auth().currentUser.displayName))
-            console.log(firebase.auth().currentUser.photoURL);
+            dispatch(userLogIn(firebase.auth().currentUser.displayName, firebase.auth().currentUser.photoURL))
             setUserName(firebase.auth().currentUser.displayName);
         }
 
@@ -49,7 +48,6 @@ const GoogleLoginForm = ({ setUserName }) => {
 
     window.onbeforeunload = function() {
       GoogleLogOut();
-
        return "";
     };
 
