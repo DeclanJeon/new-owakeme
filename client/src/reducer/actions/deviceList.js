@@ -1,6 +1,7 @@
 export const SET_DEVICE_LIST = 'SET_DEVICE_LIST';
 export const SET_CAMERA_ID = 'SET_CAMERA_ID';
 export const SET_AUDIO_ID = 'SET_AUDIO_ID';
+export const SET_RESOLUTION = 'SET_RESOLUTION';
 
 export const setDeviceList = (devices) => {
     return {
@@ -20,5 +21,12 @@ export const setAudioId = (audioId) => {
     return {
         type: SET_AUDIO_ID,
         audioId: audioId
+    }
+}
+
+export const setResolutionId = (resolution) => {
+    return {
+        type: SET_RESOLUTION,
+        resolution: resolution
     }
 }
