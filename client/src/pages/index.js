@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useRouter from "../utils/use-router";
-import { Button } from "@material-ui/core";
 import GoogleLoginForm from "../components/googleLoginForm";
 import { channelEnter } from "../reducer/actions/channel";
 import { setDeviceList } from "../reducer/actions/deviceList";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
-import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
-import { IconButton } from '@material-ui/core';
 import "../assets/css/mainpage.css";
+import new_owake_logo_black from "../assets/img/new_owake_logo_black.svg";
+import main_join from "../assets/img/main_join.png";
+import main_list from "../assets/img/main_list.png";
+import CreateRoom from '../components/createRoom';
 
 export default function SignIn() {
   const routerCtx = useRouter();
@@ -31,7 +32,7 @@ export default function SignIn() {
     async function getMedia() {
       try{
           videoPreview.srcObject = await navigator.mediaDevices.getUserMedia({
-              audio: true,
+              audio: false,
               video: true
           });
       }catch(e){
@@ -49,19 +50,15 @@ export default function SignIn() {
       setPassword(e.currentTarget.value);
     }, [password]);
 
-  const onUserName = useCallback((e) => {
-      setUserName(e.currentTarget.value);
-    }, [userName]);
-
   // 일반 로그인
   const onEnterChanel = useCallback((e) => {
       if (channelName === "") {
         return alert("Please enter the channelName");
       }
-      if (userName === "") {
-        return alert("Please enter the userName");
+      if (password === "") {
+        return alert("Please enter the Password");
       }
-
+      
       dispatch(channelEnter(channelName));
 
       const param = {
@@ -87,78 +84,74 @@ export default function SignIn() {
     }, [userName, password, channelName]);
 
   const onRoomList = useCallback(() => {
-    routerCtx.history.push({ pathname: `/channelList` });
+    routerCtx.history.push({ pathname: `/roomList` });
   }, [])
 
   return (
-    <div className="container">
-      <div className="row_container">
-        <div className="inline_container">
-          <div className="logo"></div>
+    <div>
+      <div className="index_header">
+        <div className="logo">
+          <img src={new_owake_logo_black} />
+        </div>
+      </div>
+      <div className="index_section">
+        <div className="total_container">
 
-          <div id="title_copyright">
-            <p>
-              Hyper Augmented Omni <br />
-              Communication Chnnel_OWAKE
-            </p>
-          </div>
-
-          <div className="btn_container">
-            <div className="left_image_container">
+          <div className="left_container">
+            <div className="left_header"></div>
+            <div className="left_section">
+              <span>Check the Video, Audio</span>
               <video id="videoPreview" autoPlay width="400px" />
             </div>
-            <div className="right_btn_container">
-              {isLogin &&
-                <> 
-                  <div id="Name_Your_Channel">
-                    <input
-                      id="Name_Your_Channel_input"
-                      placeholder="Name Your Channel"
-                      onChange={onChanelName}
-                    />
+            <div className="left_footer">
+                <span>Sign in</span>
+                <div className="googleLogin">
+                  <GoogleLoginForm setUserName={setUserName} />
+                </div>
+            </div>
+          </div>
+
+          <div className="right_container">
+            <div className="right_header">
+              Hyper Augmented Omni Communication Chnnel, <strong>OWAKE</strong>
+            </div>
+            <div className="right_section">
+              <div className="join_room">
+                <span>Join The Room</span>
+                <div className="img"><img src={main_join} /></div>
+                <div className="input_join">
+                  <div className="input_join_list">
+                    <div className="join_room_number"><input className="input_room_number" type="text" placeholder="Room Number" disabled={!isLogin&&true} onChange={onChanelName} /></div>
+                    <div className="join_room_password"><input className="input_room_password" type="password" placeholder="Room Password" disabled={!isLogin&&true} onChange={onPassword} /></div>
                   </div>
-                  <div id="Name_Password">
-                    <input
-                      id="Name_Password_input"
-                      placeholder="Password"
-                      type="password"
-                      onChange={onPassword}
-                    />
-                  </div>
-                  <div>
-                    <input
-                      id="Name_Your_Channel_input"
-                      placeholder="User Name"
-                      onChange={onUserName}
-                      value={userName}
-                      disabled="true"
-                    />
-                  </div>
-                  <div id="Create_Channel">
-                    <Button onClick={onEnterChanel} style={{ width: '200px', height: '35px', borderRadius: '20px' }} >Join Channel</Button>
-                  </div>
-                </>
-              }
-              <div>
-                <GoogleLoginForm setUserName={setUserName} />
+                </div>
+                <div className="join_button">
+                  <button onClick={onEnterChanel} disabled={!isLogin&&true}>Join</button>
+                </div>
+              </div>
+
+              <div className="room_list">
+                <span>Check the Room list</span>
+                <div className="img"><img src={main_list} /></div>
+                <div className="input_list">
+                  
+                </div>
+                <div className="list_button">
+                  <button onClick={onRoomList} disabled={!isLogin&&true}>Room list</button>
+                </div>
+              </div>
+
+              <div className="create_room">
+                <CreateRoom />
               </div>
             </div>
           </div>
-
-          <div className="icon__btn__container">
-            <IconButton color="primary" disabled={!isLogin&&true} onClick={onRoomList}>
-              <LibraryBooksIcon />
-            </IconButton>
-          </div>
-
-          <div id="footer">
-            <footer>
-              <span id="left">@Copyright 2021 built by Owakeme.com</span>
-                <br />
-              <span id="right">Sponsored by Kronosa.org</span>
-            </footer>
-          </div>
         </div>
+      </div>
+      <div className="index_footer">
+        <span className="sentence">
+          @Copyright 2021 built by Owakeme.com @ Sponsored by Kronosa.org
+        </span>
       </div>
     </div>
   );
