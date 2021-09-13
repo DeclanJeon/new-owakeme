@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const StreamPlayer = ({ audioTrack, videoTrack, shareTrack, type, uid }) => {
+const StreamPlayer = ({ audioTrack, videoTrack, type, uid, showUid }) => {
   const container = useRef(null);
   const userName = useSelector((state) => state.userReducer.userName);
-
+  
   useEffect(() => {
     if (!container.current) return;
     videoTrack?.play(container.current);
@@ -26,13 +26,13 @@ const StreamPlayer = ({ audioTrack, videoTrack, shareTrack, type, uid }) => {
       <div
         className="view__container"
         ref={container}
-        style={{ width: "25vw", height: "25vh" }}
       >
-        <span style={{ position: "absolute", zIndex: "999", color: "white" }}>
-          {uid}
-        </span>
+          {showUid && 
+            <div className="stream__container">
+              <div className='stream-uid'>UID: {uid}</div>
+            </div>
+          }
       </div>
-      {/* <span>{type === 'local' ? 'local ' + userName : 'remote ' + uid}</span> */}
     </>
   );
 };
