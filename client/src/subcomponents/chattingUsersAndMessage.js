@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, CircularProgress } from '@material-ui/core';
 
 const DOMAIN_FORMAT = /(http(s)?:\/\/)([a-z0-9\w]+\.*)+[a-z0-9]{2,4}/gi
@@ -7,14 +7,13 @@ function chattingUsersAndMessage({ userId, userMessage, messageTime, track, file
     const regExp = new RegExp(DOMAIN_FORMAT, "i");
     const mediaId = fileStorage.mediaId;
     const fileName = fileStorage.fileName;
-
     const onDownload = () => {
         onDownloadFile(mediaId, fileName);
     }
 
     return (
         <>
-            <p className={`chat__message ${true && "chat__reciever"}`}>
+            <p className={track === 'local' ? 'chat__receiver' : 'chat__message'}>
                 {userMessage !== "" ?
                     <>
                         <span className="chat__name">{userId}</span>
@@ -30,13 +29,15 @@ function chattingUsersAndMessage({ userId, userMessage, messageTime, track, file
                         {track == "local" ?
                             <>
                                 <span className="chat__name">{userId}</span>
-                                {fileStorage.map((obj) => (
-                                    <div>
-                                            {obj.name}
-                                    </div>
-                                ))}
-                                <div>
-                                    upload
+                                <div className="upload_file">
+                                    {fileStorage.map((obj, index) => (
+                                        <div key={index}>
+                                               {index+1}. {obj.name}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="uploaded">
+                                    uploaded
                                 </div>
                                 <span className="chat__timestamp">{messageTime}</span>
                             </>
@@ -44,9 +45,8 @@ function chattingUsersAndMessage({ userId, userMessage, messageTime, track, file
                             <>
                                 <span className="chat__name">{userId}</span>
                                     {fileStorage.fileName}
-                                    {fileLoading && <CircularProgress />}
-                                <div>
-                                    <Button onClick={onDownload}>다운로드</Button>
+                                <div className="download__button">
+                                    <Button onClick={onDownload}>Download</Button>
                                 </div>
                                 <span className="chat__timestamp">{messageTime}</span>
                             </>
