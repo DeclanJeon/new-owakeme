@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 import StreamPlayer from '../components/streamPlayer';
 import NavBar from '../components/navBar';
 import AgoraRTC from 'agora-rtc-sdk-ng';
@@ -12,43 +13,23 @@ import axios from 'axios';
 import { userLogOut } from '../reducer/actions/user';
 import "../assets/css/meeting.css";
 import "../assets/css/navigator.css";
-
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
-  cardGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8)
-  },
-  card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  cardMedia: {
-    paddingTop: '56.25%', // 16:9
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  view_container: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "center",
-  }
-}));
+import new_owake_logo_white from "../assets/img/new_owake_logo_white.svg";
+import setting from '../assets/img/settings.svg';
+import owake_icon_mic from '../assets/img/owake_icon_mic.png';
+import owake_icon_cam from '../assets/img/owake_icon_cam.png';
+import owake_icon_close from '../assets/img/owake_icon_close.png';
+import owake_icon_share from '../assets/img/owake_icon_share.png';
+import Chatting from '../subcomponents/chatting';
 
 let shareTrack = undefined;
 
 const Room = () => {
-  const classes = useStyles();
   const routerCtx = useRouter();
   const channelName = useSelector(state => state.channelReducer.channelName);
   const { userName } = useSelector(state => state.userReducer);
   const [useMic, setUseMic] = useState(true);
   const [useVideocam, setUseVideocam] = useState(true);
+  const [useSetting, setUseSetting] = useState(false);
   const dispatch = useDispatch();
 
   const client = useMemo(() => {
@@ -56,7 +37,7 @@ const Room = () => {
   }, [])
 
   const {
-    localVideoTrack, localAudioTrack, remoteUsers, share, leave
+    localVideoTrack, localAudioTrack, remoteUsers, localUid, share, leave
   } = RTCClient(client);
   
   const onMic = () => {
@@ -87,6 +68,10 @@ const Room = () => {
     })
   }, []);
 
+  const onUseSetting = useCallback(() => {
+    setUseSetting(!useSetting);
+  }, [useSetting]);
+
   window.onbeforeunload = function() {
     onLeaveChannel();
 
@@ -95,52 +80,68 @@ const Room = () => {
 
   return (
     <> 
-      <div className="container">
-        <div className="row">
-          <div className="row__nav__container">
-            {/*
-            <div className="channel_name">
-                {channelName}
-            </div>
-              |
-            */}
-            <NavBar />
+      <div className="video_container">
 
-            {/*
-            <div className="channel_clipboard">                 
-                <IonIcon icon={clipboardOutline} />
+        <div className="header__container">
+            <div className="logo">
+                <img src={new_owake_logo_white} alt="" />
             </div>
-            */}
-          </div>
-          <div className="row__view__container">
-            <div className="video__container">
-              <div className={classes.view_container}>
-                <StreamPlayer videoTrack={localVideoTrack} type='local' />
-                {remoteUsers.map((user) => (
-                    <div key={user.uid}>
-                        <StreamPlayer audioTrack={user.audioTrack} videoTrack={user.videoTrack} shareTrack={shareTrack} test={user} type='remote' uid={user.uid} />
-                    </div>
-                ))}
-              </div>
+            <div className="navbar">
+                <div className="setting__icon">
+                    <img src={setting} alt="" onClick={onUseSetting} />
+                </div>
             </div>
+        </div>
 
-            <div className="bottom_container">
-              <div className="view_mic">
-                {useMic ? <IonIcon icon={micOutline} onClick={onMic} /> : <IonIcon icon={micOffOutline} onClick={onMic} /> }
-              </div>
-              <div className="view_video">
-                {useVideocam ? <IonIcon icon={videocamOutline} onClick={onVideocam} /> : <IonIcon icon={videocamOffOutline} onClick={onVideocam} /> }
-              </div>
-              <div className="view_share">
-                <IonIcon icon={shareOutline} onClick={onShareScreen} />
-              </div>
-              <div className="view_out">
-                <IonIcon icon={logOutOutline} onClick={onLeaveChannel} />
-              </div>
+          <div className="body__container">
+              <div className="body__video__box">
+                  <div className="left__box">
+                      <div className="display__box">
+                      <StreamPlayer videoTrack={localVideoTrack} type='local' uid={localUid} showUid={true} />
+                      {remoteUsers.map((user) => (
+                          <div key={user.uid}>
+                              <StreamPlayer audioTrack={user.audioTrack} videoTrack={user.videoTrack} type='remote' uid={user.uid} showUid={true} />
+                          </div>
+                      ))}
+                      </div>
+                  </div>
+                  <div className="right__box">
+
+                    <Chatting useSetting={useSetting} onUseSetting={onUseSetting} />
+
+                  </div>
+                </div>
             </div>
+        </div>
+
+        
+
+        <div className="footer__container">
+          <div className="footer__navigator">
+              <div class="empty__footer"></div>
+
+              <div className="navigator__icons">
+                  <div className="icons icon__mic">
+                      <img src={owake_icon_mic} alt="" onClick={onMic} />
+                      <p>MIC</p>
+                  </div>
+                  <div className="icons icon__cam">
+                      <img src={owake_icon_cam} alt="" onClick={onVideocam} />
+                      <p>CAM</p>
+                  </div>
+                  <div className="icons icon__share">
+                      <img src={owake_icon_share} alt="" onClick={onShareScreen} />
+                      <p>SHARE SCREEN</p>
+                  </div>
+                  <div className="icons icon__close">
+                      <img src={owake_icon_close} alt="" onClick={onLeaveChannel} />
+                      <p>LEAVE</p>
+                  </div>
+              </div>
+
+              <div class="empty__footer"></div>
           </div>
         </div>
-      </div>
      </>
   );
 }
