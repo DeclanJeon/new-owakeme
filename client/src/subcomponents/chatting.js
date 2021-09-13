@@ -1,8 +1,6 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Modal from '@material-ui/core/Modal';
 import RTMClient from '../rtm-client';
@@ -13,11 +11,21 @@ import "../assets/css/chat.css";
 import SendOutlinedIcon from "@material-ui/icons/SendOutlined";
 import moment from 'moment';
 import { ChannelChatting } from '../reducer/actions/chatting';
+import emoticon from '../assets/img/emoticon.svg';
+import send from '../assets/img/send.svg';
+import Picker from 'emoji-picker-react';
+import Setting from './settingDevice';
 
 const useStyles = makeStyles((theme) => ({
   messageArea: {
     height: '70vh',
     overflowY: 'auto'
+  },
+  modal: {
+    display: 'flex',
+    padding: theme.spacing(1),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   paper: {
     position: "absolute",
@@ -26,15 +34,29 @@ const useStyles = makeStyles((theme) => ({
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3)
+  },
+  buttons: {
+    marginTop: '10vh'
+  },
+  ok_button: {
+    width: '50%',
+    height: '100%',
+    border: '1px solid white'
+  },
+  cancel_button: {
+    width: '50%',
+    height: '100%',
+    border: '1px solid white'
   }
 }));
 
 const IMAGE_FORMAT = "\\.(bmp|gif|jpg|jpeg|png)$";
 
-const Chatting = () => {
+const Chatting = ({ useSetting, onUseSetting }) => {
   const classes = useStyles();
 
   const [chattingMessage, setChattingMessage] = useState("");
+  const [emojiUseYn, setEmojiUseYn] = useState(false);
   const [filesStorage, setFilesStorage] = useState([]);
   const [open, setOpen] = useState(false);
   const [isFileLoading, setIsFileLoading] = useState(false);
@@ -140,10 +162,18 @@ const Chatting = () => {
       setOpen(!open);
   }, [open]);
 
-  const body = (
-    <div>
-        <h2>파일 전송</h2>
-        <h3>다음 파일을 전송합니다.</h3>
+  const onEmoticonClick = useCallback(() => {
+    setEmojiUseYn(!emojiUseYn);
+  }, [emojiUseYn]);
+
+  const onEmojiClick = useCallback((event, emojiObject) => {
+    setChattingMessage(chattingMessage+emojiObject.emoji);
+  }, [chattingMessage]);
+
+  const modalBody = (
+    <div className={classes.paper}>
+        <h2 style={{ marginBottom: '2vh' }}>File transfer</h2>
+        <h3 style={{ marginBottom: '1vh' }}>Send the following file.</h3>
         <ul>
         {
             filesStorage.map((file, index) => (
@@ -151,68 +181,71 @@ const Chatting = () => {
             ))
         }
         </ul>
-        <span>
-            <button onClick={uploadFile}>확인</button>
-            <button onClick={handleClose}>취소</button>
-        </span>
+        <div className={classes.buttons}>
+          <span style={{ width: '100%' }}>
+              <button className={classes.ok_button} onClick={uploadFile}>확인</button>
+              <button className={classes.cancel_button} onClick={handleClose}>취소</button>
+          </span>
+        </div>
     </div>
 );
 
   return (
       <>
-        <div className="chat__body">
-            <div className="inner__body__container">
-                <List className={classes.messageArea}>
-                    <Dropzone
-                        onDrop={onDrop}
-                        onDropRejected={onDropRejected}
-                        maxSize={32000000}
-                    >
-                        {({getRootProps}) => (
-                            <div {...getRootProps()} className={classes.messageArea}>
-                              {messages.length ?
-                                  messages.map((message, index) => 
-                                      (
-                                          <ListItem key={index}>
-                                              <ChattingUsersAndMessage userId={userNames[index]} userMessage={message} 
-                                                messageTime={messageTimes[index]} track={tracks[index]} fileStorage={fileStorage[index]}
-                                                onDownloadFile={onDownloadFile} fileLoading={isFileLoading} />
-                                          </ListItem>
-                                      )
-                                  )
-                                :
-                                    <></>
-                                }
-                                <div>
-                                  {open && 
-                                    <Modal
-                                        open={open}
-                                        onClose={handleClose}
-                                        className={classes.paper}
-                                    >
-                                        {body}
-                                    </Modal>
-                                  }
-                                </div>
-                            </div>
-                        )}
-                    </Dropzone>
-                </List>
+        <div className="chat__box">
+          {useSetting &&
+            <Setting onUseSetting={onUseSetting} />
+          }
+
+          <div className="chat__body">
+            <div className="setting_container">
+
             </div>
-            <div className="inner__input__container">
-                <TextField
-                    label="Input Text"
-                    fullWidth
-                    onChange={onChattingMessage}
-                    value={chattingMessage}
-                />
-                &nbsp;
-                <SendOutlinedIcon
-                    id="sendOutlinedIcon"
-                    onClick={onSendMessage}
-                ></SendOutlinedIcon>
-            </div>
-        </div>
+            <Dropzone
+                onDrop={onDrop}
+                onDropRejected={onDropRejected}
+                maxSize={32000000}
+            >
+                {({getRootProps}) => (
+                    <div {...getRootProps()} className={classes.messageArea}>
+                      {messages.length ?
+                          messages.map((message, index) => 
+                              (
+                                  <ListItem key={index}>
+                                      <ChattingUsersAndMessage userId={userNames[index]} userMessage={message} 
+                                        messageTime={messageTimes[index]} track={tracks[index]} fileStorage={fileStorage[index]}
+                                        onDownloadFile={onDownloadFile} fileLoading={isFileLoading} />
+                                  </ListItem>
+                              )
+                          )
+                        :
+                            <></>
+                        }
+                        <div>
+                          {open && 
+                            <Modal
+                                open={open}
+                                onClose={handleClose}
+                                className={classes.modal}
+                            >
+                                {modalBody}
+                            </Modal>
+                          }
+                        </div>
+                    </div>
+                )}
+            </Dropzone>
+          </div>
+          
+          <div className="emoji_input">
+            {emojiUseYn && <Picker onEmojiClick={onEmojiClick} pickerStyle={{ width: '100%' }} />}
+          </div>
+          <div className="chat__input">
+              <img src={emoticon} alt="" onClick={onEmoticonClick} />
+              <input type="text" placeholder="Type a message" onChange={onChattingMessage} value={chattingMessage} />
+              <img src={send} alt="" onClick={onSendMessage} />
+          </div>
+      </div>
     </>
   );
 };
