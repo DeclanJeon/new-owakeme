@@ -1,0 +1,126 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  display: block;
+}
+
+.inner__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.header__container {
+  background-color: #000;
+  flex: 0.1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.body__container {
+  background-color: #fff;
+  flex: 0.9;
+  margin-top: 20px;
+}
+
+.body__channel__container {
+  background-color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.channel__box {
+  width: 25vh;
+  height: 30vh;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 3px 3px gray;
+  padding: 10px;
+  margin: 10px;
+}
+
+.channel__inner__box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0.5px solid gray;
+  width: 100%;
+  height: 100%;
+  justify-content: space-evenly;
+}
+
+.channel__inner__box .profile img {
+  border-radius: 60%;
+  width: 40%;
+  display: block;
+  margin: auto;
+}
+
+.channel__inner__box .makeUserName {
+  font-size: 13px;
+}
+
+.channel__inner__box .room_button {
+  width: 18vh;
+  height: 3vh;
+}
+
+.channel__inner__box .room_button button {
+  width: 100%;
+  height: 100%;
+  color: white;
+  background-color: black;
+}
+
+.channel__box input {
+  font: inherit;
+  color: currentColor;
+  width: 100%;
+  border: 0;
+  height: 1.1876em;
+  margin: 0;
+  display: block;
+  padding: 6px 0 7px;
+  min-width: 0;
+  background: none;
+  box-sizing: content-box;
+  animation-name: mui-auto-fill-cancel;
+  letter-spacing: inherit;
+  animation-duration: 10ms;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+  outline: none;
+  border-bottom: 1px solid black;
+}
+
+.logo {
+  margin: 10px;
+}
+
+.logo > img {
+  width: 50%;
+  vertical-align: middle;
+  margin-left: 10%;
+}
+
+.navbar {
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 2%;
+}
+
+.navbar > #search {
+  border: 1px solid #000;
+  border-radius: 25px;
+  width: 300px;
+  height: 27px;
+  outline: none;
+  text-align: center;
+}

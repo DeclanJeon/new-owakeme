@@ -1,163 +1,205 @@
-/*
-  Main Page
-*/
-
 * {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI";
-}
-body {
-  width: 100%;
-  height: 100%;
+  padding: 0;
   margin: 0;
 }
 
-.container {
-  background-image: url("../img/ag-index-background.png");
-  background-size: cover;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.index_header {
+  height: 25vh;
 }
 
-.row_container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.index_header .logo img {
+  width: 150px;
+  margin-top: 40px;
+  margin-left: 40px;
 }
 
-.inline_container {
-  display: inline-block;
-  border: 5px solid white;
-  padding: 30px;
+.index_section {
+  height: 60vh;
 }
 
-.logo {
-  position: relative;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  background-image: url("../img/owake_logo.svg");
-  background-size: cover;
-  width: 100px;
-  height: 100px;
-  cursor: pointer;
-}
-
-#title_copyright > p {
-  font-size: 1.4em;
-  color: #00aefc;
-  font-weight: bold;
-  text-align: left;
-}
-
-.btn_container {
-  margin: 30px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.btn_container .right_btn_container {
-  margin-left: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-#Name_Your_Channel_input {
-  width: 200px;
-  height: 35px;
-  background: #fff;
-  border-radius: 20px;
-  border: 2px solid #00aefc;
-  margin-bottom: 2vh;
-  padding: 8px;
-  text-align: center;
-  outline: none;
-}
-
-#Name_Password_input {
-  width: 200px;
-  height: 35px;
-  background: #fff;
-  border-radius: 20px;
-  border: 2px solid #00aefc;
-  margin-bottom: 2vh;
-  padding: 8px;
-  text-align: center;
-  outline: none;
-}
-
-#Create_Channel {
-  width: 200px;
-  height: 35px;
-  background: #7fd6fd;
-  border-radius: 20px;
+button {
+  width: 100%;
+  color: white;
+  background-color: black;
   border: none;
-  margin-bottom: 2vh;
-  padding: 8px;
-  text-align: center;
-  outline: none;
-  color: #fff;
+  border-radius: 2px;
+  height: 25px;
+  padding: 6px 0 7px;
   cursor: pointer;
 }
 
-#Create_Channel span {
-  vertical-align: middle;
+.total_container {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
-#Channel_ID_URL {
-  width: 35vw;
+.total_container .left_container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 30%;
+  width: 100%;
+  height: 100%;
+  margin-left: 50px;
+}
+
+.left_container .left_header {
   height: 5vh;
-  background: #fff;
-  border-radius: 20px;
-  border: none;
-  margin-bottom: 2vh;
-  padding: 8px;
+  border-bottom: 1px solid black;
+  margin-bottom: 30px;
+}
+
+.left_container .left_section {
+  display: flex;
+  flex-direction: column;
+  font-weight: 1000;
+  align-items: center;
+  height: 65vh;
+}
+
+.left_container video {
+  width: 400px;
+  height: 30vh;
+}
+
+.left_container .left_footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  margin-top: 20px;
+  height: 30vh;
+}
+
+.left_container .left_footer span {
+  font-weight: 1000;
+  text-align: center;
+}
+
+.left_container .left_footer .googleLogin {
+  text-align: center;
+}
+
+.total_container .right_container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 70%;
+  margin-left: 100px;
+  margin-right: 100px;
+  width: 100%;
+  height: 100%;
+}
+
+.right_container .right_header {
+  height: 5vh;
+  border-bottom: 1px solid black;
+  margin-bottom: 30px;
+}
+
+.right_container .right_section {
+  display: flex;
+  justify-content: space-between;
+  height: 95vh;
+}
+
+.img {
+  margin-top: 10px;
+}
+
+.img > img {
+  width: 300px;
+}
+
+.right_section .join_room {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid black;
+}
+
+.right_section .join_room .input_join {
+  display: flex;
+  flex-direction: column;
+  height: 27vh;
+}
+
+.input_join_list {
+  margin-top: 55px;
+}
+
+.right_section .join_room,
+.room_list,
+.create_room span {
+  font-weight: 1000;
+}
+
+.right_section .join_room .input_join .join_room_number,
+.join_room_password {
+  margin-top: 16px;
+  border-bottom: 1px solid black;
+}
+
+.input_room_number,
+.input_room_password,
+.input_room_name,
+.input_room_number:focus,
+.input_room_password:focus,
+.input_room_name:focus {
+  font: inherit;
+  color: currentColor;
+  width: 100%;
+  border: 0;
+  height: 1.1876em;
+  margin: 0;
+  display: block;
+  padding: 6px 0 7px;
+  min-width: 0;
+  background: none;
+  box-sizing: content-box;
+  animation-name: mui-auto-fill-cancel;
+  letter-spacing: inherit;
+  animation-duration: 10ms;
+  -webkit-tap-highlight-color: transparent;
   text-align: center;
   outline: none;
-  color: #00aefc;
-  border: 2px solid #00aefc;
-  cursor: pointer;
 }
 
-#Channel_ID_URL span {
-  vertical-align: middle;
-}
-
-.icon__btn__container {
+.right_section .room_list {
   display: flex;
-  flex-direction: row-reverse;
-  color: #fff;
+  flex-direction: column;
+  border-bottom: 1px solid black;
 }
 
-.icon__btn__container > #roomList {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
+.right_section .room_list .input_list {
+  height: 27vh;
 }
 
-.icon__btn__container > #roomList :hover {
-  color: lightcoral;
+.right_section .create_room {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid black;
 }
 
-.icon__btn__container > #roomAdd {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  margin-right: 10px;
+.right_section .create_room .input_create {
+  display: flex;
+  flex-direction: column;
+  height: 27vh;
 }
 
-.icon__btn__container > #roomAdd :hover {
-  color: aqua;
+.input_create_list {
+  margin-top: 55px;
 }
 
-#footer {
-  margin: 5px;
+.right_section .create_room .input_create .create_room_name,
+.create_room_number,
+.create_room_password {
+  margin-top: 16px;
+  border-bottom: 1px solid black;
 }
 
-#footer > footer {
-  color: #fff;
+.index_footer {
+  text-align: right;
+  margin-right: 100px;
+  margin-top: 10px;
+  height: 5vh;
 }
