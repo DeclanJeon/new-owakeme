@@ -3,6 +3,10 @@
   margin: 0;
 }
 
+#root {
+  overflow: hidden;
+}
+
 .video_container {
   display: block;
 }

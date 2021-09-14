@@ -25,7 +25,9 @@
   height: 60vh;
 }
 
-button {
+.join_button button,
+.list_button button,
+.create_button button {
   width: 100%;
   color: white;
   background-color: black;
