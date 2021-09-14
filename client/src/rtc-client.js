@@ -33,6 +33,10 @@ export default function RTCClient(client) {
   }
 
   async function leave() {
+    if(screenClient && screenTrack){
+      leaveShareScreen(screenClient, screenTrack);
+    }
+
     if (localAudioTrack) {
       localAudioTrack.stop();
       localAudioTrack.close();
@@ -45,16 +49,19 @@ export default function RTCClient(client) {
     await client?.leave();
   }
 
+  function leaveShareScreen(screenClient, screenTrack) {
+    screenClient.unpublish(screenTrack);
+    screenTrack.stop();
+    screenTrack.close();
+
+    screenClient.leave();
+    screenClient = null;
+    screenTrack = null; 
+  }
+
   async function share() {
-    if(screenClient){
-      screenClient.unpublish(screenTrack);
-      if(screenTrack){
-        screenTrack.stop();
-        screenTrack.close();
-      }
-      screenClient.leave();
-      screenClient = null;
-      screenTrack = null; 
+    if(screenClient && screenTrack){
+      leaveShareScreen(screenClient, screenTrack);
     }else{
       screenClient = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
       await screenClient.join(process.env.REACT_APP_AGORA_APP_ID, channelName, null);
@@ -63,13 +70,7 @@ export default function RTCClient(client) {
       await screenClient.publish(screenTrack);
 
       screenTrack.on("track-ended", () => {
-        screenClient.unpublish(screenTrack);
-        screenTrack.stop();
-        screenTrack.close();
-        screenClient.leave();
-
-        screenClient = null;
-        screenTrack = null;
+        leaveShareScreen(screenClient, screenTrack);
       })
       return screenTrack;
     }
