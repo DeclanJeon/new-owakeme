@@ -226,6 +226,7 @@
   width: 25vw;
   height: 25vh;
   margin-right: 5px;
+  position: relative;
 }
 
 .stream__container {
