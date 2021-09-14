@@ -46,8 +46,8 @@ const GoogleLoginForm = ({ setUserName }) => {
         )  
     }
 
-    window.onbeforeunload = function() {
-      GoogleLogOut();
+    window.onunload  = function(e) {
+       GoogleLogOut();
        return "";
     };
 
