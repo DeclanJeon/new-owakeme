@@ -19,6 +19,9 @@ import owake_icon_mic from '../assets/img/owake_icon_mic.png';
 import owake_icon_cam from '../assets/img/owake_icon_cam.png';
 import owake_icon_close from '../assets/img/owake_icon_close.png';
 import owake_icon_share from '../assets/img/owake_icon_share.png';
+import disable_mic from '../assets/img/disable_mic.png';
+import disable_cam from '../assets/img/disable_cam.png';
+import disable_share from '../assets/img/disable_share.png';
 import Chatting from '../subcomponents/chatting';
 
 let shareTrack = undefined;
@@ -29,6 +32,7 @@ const Room = () => {
   const { userName } = useSelector(state => state.userReducer);
   const [useMic, setUseMic] = useState(true);
   const [useVideocam, setUseVideocam] = useState(true);
+  const [useShareScreen, setUseShareScreen] = useState(true);
   const [useSetting, setUseSetting] = useState(false);
   const dispatch = useDispatch();
 
@@ -51,6 +55,7 @@ const Room = () => {
   }
 
   const onShareScreen = async function() {
+    setUseShareScreen(!useShareScreen)
     shareTrack = await share();
   }
 
@@ -118,19 +123,19 @@ const Room = () => {
 
         <div className="footer__container">
           <div className="footer__navigator">
-              <div class="empty__footer"></div>
+              <div className="empty__footer"></div>
 
               <div className="navigator__icons">
                   <div className="icons icon__mic">
-                      <img src={owake_icon_mic} alt="" onClick={onMic} />
+                      <img src={useMic ? owake_icon_mic : disable_mic} alt="" onClick={onMic} />
                       <p>MIC</p>
                   </div>
                   <div className="icons icon__cam">
-                      <img src={owake_icon_cam} alt="" onClick={onVideocam} />
+                      <img src={useVideocam ? owake_icon_cam : disable_cam} alt="" onClick={onVideocam} />
                       <p>CAM</p>
                   </div>
                   <div className="icons icon__share">
-                      <img src={owake_icon_share} alt="" onClick={onShareScreen} />
+                      <img src={useShareScreen ? owake_icon_share : disable_share} alt="" onClick={onShareScreen} />
                       <p>SHARE SCREEN</p>
                   </div>
                   <div className="icons icon__close">
@@ -139,7 +144,7 @@ const Room = () => {
                   </div>
               </div>
 
-              <div class="empty__footer"></div>
+              <div className="empty__footer"></div>
           </div>
         </div>
      </>
