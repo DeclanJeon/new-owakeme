@@ -108,7 +108,7 @@ export default function SignIn() {
               <video id="videoPreview" autoPlay width="400px" />
             </div>
             <div className="left_footer">
-                <span>Sign in</span>
+                <span>{isLogin ? "You have logged in" : "Sign in"}</span>
                 <div className="googleLogin">
                   <GoogleLoginForm setUserName={setUserName} />
                 </div>
