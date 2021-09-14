@@ -95,7 +95,7 @@ export default function SignIn() {
           <img src={new_owake_logo_black} />
         </div>
         <div className="demo">
-          <a href="https://url.kr/e1qs6g"><img src={demo} /></a>
+          <a href="https://url.kr/lui85t"><img src={demo} /></a>
         </div>
       </div>
       <div className="index_section">
