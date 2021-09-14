@@ -72,7 +72,7 @@ const Room = () => {
     setUseSetting(!useSetting);
   }, [useSetting]);
 
-  window.onbeforeunload = function() {
+  window.onunload = function() {
     onLeaveChannel();
 
     return "";
