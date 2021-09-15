@@ -5,8 +5,6 @@ const firebase = require('firebase/app');
 const firebaseConfig = require('../config/firebaseConfig.js');
 require('firebase/firestore');
 
-const request = require('request');
-
 const client = redis.createClient(process.env.REDIS_URL);
 //const client = redis.createClient();
 client.on("error", function(err, data){
@@ -72,27 +70,34 @@ router.post('/remove/roomUserName', (req, res) => {
     
 })
 
-router.post('/room/register', (req, res) => {
+router.post('/room/register', async (req, res) => {
     const bodyData = req.body;
-
-    db.collection("RoomList").add({
-        roomName: bodyData.roomName,
-        roomNumber: bodyData.roomNumber,
-        roomPassword: bodyData.roomPassword,
-        makeUserName: bodyData.makeUserName,
-        photoURL: bodyData.photoURL
-    })
-    .then((e) => {
-        return res.status(200).json({
-            success: true
+    const snapshot = await db.collection("RoomList").where("roomNumber", "==", bodyData.roomNumber).get();
+    
+    if(snapshot.empty){
+        db.collection("RoomList").add({
+            roomName: bodyData.roomName,
+            roomNumber: bodyData.roomNumber,
+            roomPassword: bodyData.roomPassword,
+            makeUserName: bodyData.makeUserName,
+            photoURL: bodyData.photoURL
         })
-    })
-    .catch((err) => {
-        return res.status(500).json({
-            success: false,
-            error: err
+        .then((e) => {
+            return res.status(200).json({
+                success: true
+            })
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                success: false,
+                error: err
+            });
+        })
+    }else{
+        return res.status(200).json({
+            success : false
         });
-    })
+    }
 })
 
 router.get('/room/roomList', (req, res) => {
