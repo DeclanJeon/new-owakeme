@@ -71,13 +71,7 @@ export default function SignIn() {
       
       axios.post('/api/room/getRoomInfo', param).then(res => {
         if (res.data.passwordCheckResult) {
-          
-          axios.post("/api/save/roomUserName", param).then((res) => {
-            if (res.data.success === true) {
-              routerCtx.history.push({ pathname: `/meeting` });
-            }
-          });
-
+          routerCtx.history.push({ pathname: `/meeting` });
         }else{
           alert(res.data.error);
           setPassword('');
