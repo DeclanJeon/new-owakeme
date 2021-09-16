@@ -1,33 +1,29 @@
-import { SET_LOCAL_AUDIO_TRACK, SET_LOCAL_VIDEO_TRACK, SET_REMOTE_USERS } from '../actions/track'
+import { SET_LOCAL_TRACK, SET_LEAVE_LOCAL_TRACK } from '../actions/track'
 
 const initState = {
-    localVideoTrack: undefined,
-    localAudioTrack: undefined,
-    remoteUsers: [],
+    localVideo: undefined,
+    localAudio: undefined,
+    localClient: undefined,
     isLocal: false,
-    isRemote: false
 }
 
 const trackReducer = (state = initState, action) => {
     switch(action.type) {
-        case SET_LOCAL_AUDIO_TRACK:
+        case SET_LOCAL_TRACK:
             return {
                 ...state,
-                localAudioTrack: action.localAudioTrack,
+                localAudio: action.localAudio,
+                localVideo: action.localVideo,
+                localClient: action.localClient,
                 isLocal: true
             };
-        case SET_LOCAL_VIDEO_TRACK:
+        case SET_LEAVE_LOCAL_TRACK:
             return {
                 ...state,
-                localVideoTrack: action.localVideoTrack,
-                isLocal: true
-            }
-        case SET_REMOTE_USERS:
-            return {
-                ...state,
-                remoteUsers: action.remoteUsers,
-                isLocal: false,
-                isRemote: true
+                localAudio: undefined,
+                localVideo: undefined,
+                localClient: undefined,
+                isLocal: false
             }
         default:
             return state;

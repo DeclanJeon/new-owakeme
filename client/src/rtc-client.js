@@ -1,23 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import AgoraRTC  from 'agora-rtc-sdk-ng';
+import { onLocalTrack, onLeaveLocalTrack } from './reducer/actions/track';
 
 let screenClient = null;
 let screenTrack = null;
 
 export default function RTCClient(client) {
   const channelName = useSelector(state => state.channelReducer.channelName);
-  const {audioId, cameraId, resolution} = useSelector(state => state.deviceReducer);
-  
+  const { audioId, cameraId, resolution } = useSelector(state => state.deviceReducer);
+  const { localVideo, localAudio, localClient } = useSelector(state => state.trackReducer);
+
   const [localVideoTrack, setLocalVideoTrack] = useState(undefined);
   const [localAudioTrack, setLocalAudioTrack] = useState(undefined);
   const [localUid, setLocalUid] = useState('');
   const [remoteUsers, setRemoteUsers] = useState([]);
 
+  const dispatch = useDispatch();
+
   async function createLocalTracks() {
     const microphoneTrack = await AgoraRTC.createMicrophoneAudioTrack({ AEC: true, AGC: true, ANS: true, audioId: audioId });
     const cameraTrack = await AgoraRTC.createCameraVideoTrack({ cameraId: cameraId, encoderConfig: resolution});
 
+    dispatch(onLocalTrack(cameraTrack, microphoneTrack, client));
     setLocalVideoTrack(cameraTrack)
     setLocalAudioTrack(microphoneTrack)
 
@@ -32,21 +37,22 @@ export default function RTCClient(client) {
     await client.publish([microphoneTrack, cameraTrack]);
   }
 
-  async function leave() {
+  async function leave(video, audio, userClient) {
     if(screenClient && screenTrack){
       leaveShareScreen(screenClient, screenTrack);
     }
 
-    if (localAudioTrack) {
-      localAudioTrack.stop();
-      localAudioTrack.close();
+    if (audio) {
+      audio.stop();
+      audio.close();
     }
-    if (localVideoTrack) {
-      localVideoTrack.stop();
-      localVideoTrack.close();
+    if (video) {
+      video.stop();
+      video.close();
     }
+    dispatch(onLeaveLocalTrack());
     setRemoteUsers([]);
-    await client?.leave();
+    await userClient?.leave();
   }
 
   function leaveShareScreen(screenClient, screenTrack) {
@@ -79,7 +85,17 @@ export default function RTCClient(client) {
 
   useEffect(() => {
     if (!client) return;
-    join();
+    debugger;
+    if(localClient){
+      leave(localVideo, localAudio, localClient).then(() => {
+        debugger;
+        join();
+      });
+    }else{
+      join();
+    }
+    
+    
 
     const handleUserPublished = async (user, mediaType) => {
       await client.subscribe(user, mediaType);
@@ -92,10 +108,10 @@ export default function RTCClient(client) {
       //setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
     const handleUserLeft = (user) => {
-      setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
+      //setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
     const handleConnectionStateChange = (curState, prevState) => {
-      
+
     }
 
     client.on('user-published', handleUserPublished);

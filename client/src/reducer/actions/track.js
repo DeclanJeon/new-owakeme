@@ -1,24 +1,18 @@
-export const SET_LOCAL_VIDEO_TRACK = 'SET_LOCAL_VIDEO_TRACK'
-export const SET_LOCAL_AUDIO_TRACK = 'ET_LOCAL_AUDIO_TRACK'
-export const SET_REMOTE_USERS = 'SET_REMOTE_USERS'
+export const SET_LOCAL_TRACK = 'SET_LOCAL_TRACK'
+export const SET_LEAVE_LOCAL_TRACK = 'SET_LEAVE_LOCAL_TRACK'
 
-export const onLocalVideoTrack = (videoTrack) => {
+export const onLocalTrack = (videoTrack, audioTrack, client) => {
     return {
-        type: SET_LOCAL_VIDEO_TRACK,
-        localVideoTrack: videoTrack
+        type: SET_LOCAL_TRACK,
+        localVideo: videoTrack,
+        localAudio: audioTrack,
+        localClient: client
     }
 }
 
-export const onLocalAudioTrack = (audioTrack) => {
+export const onLeaveLocalTrack = () => {
     return {
-        type: SET_LOCAL_AUDIO_TRACK,
-        localAudioTrack: audioTrack
+        type: SET_LEAVE_LOCAL_TRACK,
     }
 }
 
-export const onRemoteUsers = (remoteUsers) => {
-    return {
-        type: SET_REMOTE_USERS,
-        remoteUsers: remoteUsers
-    }
-}

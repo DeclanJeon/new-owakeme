@@ -60,7 +60,7 @@ const Room = () => {
   }
 
   const onLeaveChannel = useCallback(() => {
-    leave();
+    leave(localVideoTrack, localAudioTrack, client);
     dispatch(userLogOut());
     const param = {
       channelName: channelName,
