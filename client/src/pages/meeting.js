@@ -24,8 +24,6 @@ import disable_cam from '../assets/img/disable_cam.png';
 import disable_share from '../assets/img/disable_share.png';
 import Chatting from '../subcomponents/chatting';
 
-let shareTrack = undefined;
-
 const Room = () => {
   const routerCtx = useRouter();
   const channelName = useSelector(state => state.channelReducer.channelName);
@@ -56,7 +54,7 @@ const Room = () => {
 
   const onShareScreen = async function() {
     setUseShareScreen(!useShareScreen)
-    shareTrack = await share();
+    await share();
   }
 
   const onLeaveChannel = useCallback(() => {

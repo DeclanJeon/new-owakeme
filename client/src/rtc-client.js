@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import AgoraRTC  from 'agora-rtc-sdk-ng';
 import { onLocalTrack, onLeaveLocalTrack } from './reducer/actions/track';
 
-let screenClient = null;
-let screenTrack = null;
+let screenClient = undefined;
+let screenTrack = undefined;
 
 export default function RTCClient(client) {
   const channelName = useSelector(state => state.channelReducer.channelName);
@@ -61,8 +61,8 @@ export default function RTCClient(client) {
     screenTrack.close();
 
     screenClient.leave();
-    screenClient = null;
-    screenTrack = null; 
+    screenClient = undefined;
+    screenTrack = undefined; 
   }
 
   async function share() {
@@ -77,6 +77,7 @@ export default function RTCClient(client) {
 
       screenTrack.on("track-ended", () => {
         leaveShareScreen(screenClient, screenTrack);
+        setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
       })
       return screenTrack;
     }
@@ -85,10 +86,9 @@ export default function RTCClient(client) {
 
   useEffect(() => {
     if (!client) return;
-    debugger;
+
     if(localClient){
       leave(localVideo, localAudio, localClient).then(() => {
-        debugger;
         join();
       });
     }else{
@@ -108,7 +108,7 @@ export default function RTCClient(client) {
       //setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
     const handleUserLeft = (user) => {
-      //setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
+      setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
     }
     const handleConnectionStateChange = (curState, prevState) => {
 
