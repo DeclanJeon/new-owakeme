@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ionic/react": "^5.6.12",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
@@ -29,8 +28,9 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "redux": "^4.1.0",
-    "web-vitals": "^1.1.2",
-    "white-web-sdk": "^2.13.19"
+    "redux-persist": "^6.0.0",
+    "sweetalert2": "^11.1.5",
+    "web-vitals": "^1.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
