@@ -12,6 +12,7 @@ import main_join from "../assets/img/main_join.png";
 import main_list from "../assets/img/main_list.png";
 import demo from "../assets/img/demo.png";
 import CreateRoom from '../components/createRoom';
+import Swal from "sweetalert2";
 
 export default function SignIn() {
   const routerCtx = useRouter();
@@ -86,7 +87,36 @@ export default function SignIn() {
 
   const onRoomList = useCallback(() => {
     routerCtx.history.push({ pathname: `/roomList` });
-  }, [])
+  }, []);
+
+  const notifyBtn = useCallback(() => {
+    Swal.fire({
+        title: "Notice!",
+        html:
+            "<p>" +
+            "Disclaimer:  " +
+            "Dear Respectful users, <br/>" +
+            "We are upgrading our freemium service and <br/> all rooms are refreshed because we don't store the communication data. Please be noted that you may set up your new rooms as usual and test our new functions and service. Stay tuned for our omni-communication channel." +
+            "However, if you prefer to use the old version, please visit the link below. " +
+            "When you click outside the window, the window disappears." +
+            "<br/><br/><br/>" +
+            "<small>" +
+            "Pop-ups are not called for a day after the pop-up is closed. <br/>" +
+            "To make a call, please delete the browser's cookie." +
+            "</small>" +
+            "</p>",
+        icon: "info",
+        confirmButtonText: "Link Go",
+        keydownListenerCapture: true,
+        showCancelButton: true,
+        returnInputValueOnDeny: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "https://v1.owake.me/#/";
+        }
+    });
+  },[]);
+
 
   return (
     <div>
@@ -102,7 +132,11 @@ export default function SignIn() {
         <div className="total_container">
 
           <div className="left_container">
-            <div className="left_header"></div>
+            <div className="left_header">
+              <button id="noticeBtn" onClick={notifyBtn}>
+                Notice
+              </button>
+            </div>
             <div className="left_section">
               <span>Check the Video, Audio</span>
               <video id="videoPreview" autoPlay width="400px" />
