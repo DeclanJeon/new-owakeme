@@ -11,7 +11,8 @@ import reportWebVitals from './reportWebVitals';
 
 const config = {
   key: 'root',
-  storage
+  storage,
+  blacklist: ["chattingReducer"]
 };
 
 const persistedReducer = persistReducer(config, rootReducer);
