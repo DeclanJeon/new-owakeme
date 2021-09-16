@@ -223,15 +223,15 @@
   cursor: pointer;
 }
 .view__container {
-  width: 25vw;
-  height: 25vh;
+  width: 30vw;
+  height: 30vh;
   margin-right: 5px;
   position: relative;
 }
 
 .stream__container {
-  width: 25vw;
-  height: 25vh;
+  width: 30vw;
+  height: 30vh;
   position: absolute;
 }
 

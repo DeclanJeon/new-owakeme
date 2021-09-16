@@ -57,6 +57,7 @@
   height: 5vh;
   border-bottom: 1px solid black;
   margin-bottom: 30px;
+  display: flex;
 }
 
 .left_container .left_section {
@@ -212,4 +213,18 @@
   margin-right: 100px;
   margin-top: 10px;
   height: 5vh;
+}
+
+#noticeBtn {
+  height: 40px;
+  margin-bottom: 10px;
+  flex: 0.5;
+  background-color: black;
+  color: white;
+}
+
+#noticeBtn:hover {
+  background-color: rgb(201, 198, 198);
+  color: #000;
+  font-weight: bold;
 }
