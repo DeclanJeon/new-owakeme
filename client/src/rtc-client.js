@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import AgoraRTC  from 'agora-rtc-sdk-ng';
-import { onLocalTrack, onLeaveLocalTrack } from './reducer/actions/track';
-
-let screenClient = undefined;
-let screenTrack = undefined;
+import { onLocalTrack, onLeaveLocalTrack, onLocalShare, offLocalShare, useSharing } from './reducer/actions/track';
 
 export default function RTCClient(client) {
   const channelName = useSelector(state => state.channelReducer.channelName);
   const { audioId, cameraId, resolution } = useSelector(state => state.deviceReducer);
-  const { localVideo, localAudio, localClient } = useSelector(state => state.trackReducer);
-
+  const { localVideo, localAudio, localClient, shareClient, shareTrack } = useSelector(state => state.trackReducer);
   const [localVideoTrack, setLocalVideoTrack] = useState(undefined);
   const [localAudioTrack, setLocalAudioTrack] = useState(undefined);
   const [localUid, setLocalUid] = useState('');
@@ -38,8 +34,8 @@ export default function RTCClient(client) {
   }
 
   async function leave(video, audio, userClient) {
-    if(screenClient && screenTrack){
-      leaveShareScreen(screenClient, screenTrack);
+    if(shareClient){
+      LeaveShareScreen(shareClient, shareTrack);
     }
 
     if (audio) {
@@ -55,28 +51,30 @@ export default function RTCClient(client) {
     await userClient?.leave();
   }
 
-  function leaveShareScreen(screenClient, screenTrack) {
+  function LeaveShareScreen(screenClient, screenTrack) {
     screenClient.unpublish(screenTrack);
     screenTrack.stop();
     screenTrack.close();
 
     screenClient.leave();
-    screenClient = undefined;
-    screenTrack = undefined; 
+    dispatch(useSharing());
+    dispatch(offLocalShare());
   }
 
   async function share() {
-    if(screenClient && screenTrack){
-      leaveShareScreen(screenClient, screenTrack);
+    if(shareClient && shareTrack){
+      LeaveShareScreen(shareClient, shareTrack);
     }else{
-      screenClient = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
+      const screenClient = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
       await screenClient.join(process.env.REACT_APP_AGORA_APP_ID, channelName, null);
 
-      screenTrack = await AgoraRTC.createScreenVideoTrack({encoderConfig: resolution});
+      const screenTrack = await AgoraRTC.createScreenVideoTrack({encoderConfig: resolution});
       await screenClient.publish(screenTrack);
+      
+      dispatch(onLocalShare(screenClient, screenTrack));
 
       screenTrack.on("track-ended", () => {
-        leaveShareScreen(screenClient, screenTrack);
+        LeaveShareScreen(screenClient, screenTrack);
         setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
       })
       return screenTrack;
