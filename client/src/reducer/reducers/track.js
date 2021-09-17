@@ -51,7 +51,9 @@ const trackReducer = (state = initState, action) => {
                 sharing: false
             }
         default:
-            return state
+            return {
+                ...state
+            }
     }
 }
 
