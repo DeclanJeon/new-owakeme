@@ -11,6 +11,7 @@ import { micOutline, micOffOutline, videocamOutline, videocamOffOutline, shareOu
 import useRouter from '../utils/use-router';
 import axios from 'axios';
 import { userLogOut } from '../reducer/actions/user';
+import { dontUseSharing } from '../reducer/actions/track';
 import "../assets/css/meeting.css";
 import "../assets/css/navigator.css";
 import new_owake_logo_white from "../assets/img/new_owake_logo_white.svg";
@@ -26,11 +27,9 @@ import Chatting from '../subcomponents/chatting';
 
 const Room = () => {
   const routerCtx = useRouter();
-  const channelName = useSelector(state => state.channelReducer.channelName);
-  const { userName } = useSelector(state => state.userReducer);
+  const { sharing } = useSelector(state => state.trackReducer);
   const [useMic, setUseMic] = useState(true);
   const [useVideocam, setUseVideocam] = useState(true);
-  const [useShareScreen, setUseShareScreen] = useState(true);
   const [useSetting, setUseSetting] = useState(false);
   const dispatch = useDispatch();
 
@@ -53,22 +52,14 @@ const Room = () => {
   }
 
   const onShareScreen = async function() {
-    setUseShareScreen(!useShareScreen)
+    dispatch(dontUseSharing());
     await share();
   }
 
   const onLeaveChannel = useCallback(() => {
     leave(localVideoTrack, localAudioTrack, client);
     dispatch(userLogOut());
-    const param = {
-      channelName: channelName,
-      userName: userName
-    }
-    axios.post('/api/remove/roomUserName', param).then((res) => {
-      if(res.data.success === true){
-        routerCtx.history.push({ pathname: '/' })
-      }
-    })
+    routerCtx.history.push({ pathname: '/' });
   }, []);
 
   const onUseSetting = useCallback(() => {
@@ -133,7 +124,7 @@ const Room = () => {
                       <p>CAM</p>
                   </div>
                   <div className="icons icon__share">
-                      <img src={useShareScreen ? owake_icon_share : disable_share} alt="" onClick={onShareScreen} />
+                      <img src={sharing ? owake_icon_share : disable_share} alt="" onClick={onShareScreen} />
                       <p>SHARE SCREEN</p>
                   </div>
                   <div className="icons icon__close">
