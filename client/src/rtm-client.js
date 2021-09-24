@@ -44,8 +44,7 @@ export default class RTMClient extends EventEmitter {
   }
 
   async login (uid, token, channelName) {
-    this.accountName = uid
-    await this.client.login({ uid: this.accountName, token}).then(() => {
+    await this.client.login({ uid, token}).then(() => {
       this._logined = true;
       this.joinChannel(channelName).then(() => {
         this.channels[channelName].joined = true;
