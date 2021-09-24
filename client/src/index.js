@@ -16,7 +16,7 @@ const config = {
 };
 
 const persistedReducer = persistReducer(config, rootReducer);
-const rootStore  = createStore(persistedReducer);
+const rootStore  = createStore(persistedReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 const persistor = persistStore(rootStore);
 
 ReactDOM.render(
