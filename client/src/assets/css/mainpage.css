@@ -92,6 +92,13 @@
   text-align: center;
 }
 
+.nickNameInput__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .total_container .right_container {
   display: flex;
   flex-direction: column;
