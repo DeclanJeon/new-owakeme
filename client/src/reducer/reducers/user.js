@@ -20,6 +20,7 @@ const userReducer = (state = initState, action) => {
         case USER_LOG_OUT:
             return {
                 ...state,
+                userName: '',
                 isLogin: false,
                 isLogout: true
             };
