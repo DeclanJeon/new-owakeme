@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import axios from 'axios';
 import useRouter from '../utils/use-router';
+import userIcon from '../assets/img/user-icon.png';
 
 
 function RoomCard({ roomName, roomNumber, makeUserName, photoURL }) {
@@ -31,7 +32,7 @@ function RoomCard({ roomName, roomNumber, makeUserName, photoURL }) {
     <>
       <div className="channel__box">
         <div className="channel__inner__box">
-          <div className="profile"><img src={photoURL} /></div>
+          <div className="profile"><img src={userIcon} /></div>
           <div className="makeUserName">{makeUserName}</div>
           <div className="room__number"><input type="text" value={roomName} disabled="true" /></div>
           <div className="room__name"><input type="text" placeholder="Room Name" value={roomNumber} disabled="true" /></div>
