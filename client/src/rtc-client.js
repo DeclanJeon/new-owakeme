@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import AgoraRTC  from 'agora-rtc-sdk-ng';
-import { onLocalTrack, onLeaveLocalTrack, onLocalShare, offLocalShare, useSharing } from './reducer/actions/track';
+import { onLocalTrack, onLeaveLocalTrack, onLocalShare, offLocalShare, useSharing, dontUseSharing } from './reducer/actions/track';
 
 export default function RTCClient(client) {
   const channelName = useSelector(state => state.channelReducer.channelName);
   const { audioId, cameraId, resolution } = useSelector(state => state.deviceReducer);
   const { localVideo, localAudio, localClient, shareClient, shareTrack } = useSelector(state => state.trackReducer);
+  
   const [localVideoTrack, setLocalVideoTrack] = useState(undefined);
   const [localAudioTrack, setLocalAudioTrack] = useState(undefined);
   const [localUid, setLocalUid] = useState('');
@@ -62,7 +63,7 @@ export default function RTCClient(client) {
   }
 
   async function share() {
-    if(shareClient && shareTrack){
+    if(shareClient){
       LeaveShareScreen(shareClient, shareTrack);
     }else{
       const screenClient = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
@@ -74,6 +75,7 @@ export default function RTCClient(client) {
       dispatch(onLocalShare(screenClient, screenTrack));
 
       screenTrack.on("track-ended", () => {
+        dispatch(dontUseSharing());
         LeaveShareScreen(screenClient, screenTrack);
         setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
       })
@@ -93,8 +95,6 @@ export default function RTCClient(client) {
       join();
     }
     
-    
-
     const handleUserPublished = async (user, mediaType) => {
       await client.subscribe(user, mediaType);
       setRemoteUsers(remoteUsers => Array.from(client.remoteUsers));
