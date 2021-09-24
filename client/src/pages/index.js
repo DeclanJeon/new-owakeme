@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useRouter from "../utils/use-router";
-import GoogleLoginForm from "../components/googleLoginForm";
 import { channelEnter } from "../reducer/actions/channel";
 import { setDeviceList } from "../reducer/actions/deviceList";
 import AgoraRTC from "agora-rtc-sdk-ng";
@@ -13,10 +12,14 @@ import main_list from "../assets/img/main_list.png";
 import demo from "../assets/img/demo.png";
 import CreateRoom from '../components/createRoom';
 import Swal from "sweetalert2";
+import { Button, FormControl, Input } from '@material-ui/core';
+import { userLogIn, userLogOut } from "../reducer/actions/user";
+
+const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
 
 export default function SignIn() {
   const routerCtx = useRouter();
-  const isLogin = useSelector(state => state.userReducer.isLogin);
+  const { userName, isLogin } = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +29,7 @@ export default function SignIn() {
   }, []);
 
   const [channelName, setChannelName] = useState("");
-  const [userName, setUserName] = useState("");
+  const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
@@ -51,6 +54,17 @@ export default function SignIn() {
   const onPassword = useCallback((e) => {
       setPassword(e.currentTarget.value);
     }, [password]);
+
+  const onNickname = useCallback((e) => {
+    setNickname(e.currentTarget.value);
+  }, [nickname]);
+
+  const onSaveNickname = useCallback(() => {
+    if(korean.test(nickname)){
+      return alert('You can only type in English.');
+    }
+    dispatch(userLogIn(nickname, ''));
+  }, [nickname]);
 
   // 일반 로그인
   const onEnterChanel = useCallback((e) => {
@@ -78,7 +92,7 @@ export default function SignIn() {
         }
       });
     }, [userName, password, channelName]);
-
+  
   const onRoomList = useCallback(() => {
     routerCtx.history.push({ pathname: `/roomList` });
   }, []);
@@ -92,7 +106,11 @@ export default function SignIn() {
             "Dear Respectful users, <br/>" +
             "We are upgrading our freemium service and <br/> all rooms are refreshed because we don't store the communication data. Please be noted that you may set up your new rooms as usual and test our new functions and service. Stay tuned for our omni-communication channel." +
             "However, if you prefer to use the old version, please visit the link below. " +
-            "When you click outside the window, the window disappears." +
+            "When you click outside the window, the window disappears. <br/>" +
+            "Please click the link below to visit the old version. <br/><br/>" +
+            "Please be informed that Owake.me doesn't store any private data but link to the Google service to get the Name and a photo. " +
+            "Only the user name and a photo is received from Google. " +
+            "We protect the personal information. You govern your world. "+
             "<br/><br/><br/>" +
             "<small>" +
             "Pop-ups are not called for a day after the pop-up is closed. <br/>" +
@@ -100,7 +118,7 @@ export default function SignIn() {
             "</small>" +
             "</p>",
         icon: "info",
-        confirmButtonText: "Link Go",
+        confirmButtonText: "Old Version",
         keydownListenerCapture: true,
         showCancelButton: true,
         returnInputValueOnDeny: true,
@@ -111,6 +129,9 @@ export default function SignIn() {
     });
   },[]);
 
+  window.onunload = (e) => {
+    dispatch(userLogOut());
+  }
 
   return (
     <div>
@@ -137,9 +158,22 @@ export default function SignIn() {
             </div>
             <div className="left_footer">
                 <span>{isLogin ? "You have logged in" : "Sign in"}</span>
-                <div className="googleLogin">
-                  <GoogleLoginForm setUserName={setUserName} />
-                </div>
+                <div className="nickNameInput__container">
+                  <div className="formControl">
+                      <FormControl id="formControl">
+                          <Input
+                              id="nickNameInput"
+                              placeholder="Please a nickname"
+                              required
+                              onChange={onNickname}
+                              value={nickname}
+                          />
+                      </FormControl>
+                  </div>
+                  <div className="saveBtn__container">
+                      <Button id="saveBtn" onClick={onSaveNickname}>Save</Button>
+                  </div>
+              </div>
             </div>
           </div>
 
