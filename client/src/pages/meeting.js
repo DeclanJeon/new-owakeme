@@ -56,11 +56,11 @@ const Room = () => {
     await share();
   }
 
-  const onLeaveChannel = useCallback(() => {
+  const onLeaveChannel = () => {
     leave(localVideoTrack, localAudioTrack, client);
     dispatch(userLogOut());
     routerCtx.history.push({ pathname: '/' });
-  }, []);
+  }
 
   const onUseSetting = useCallback(() => {
     setUseSetting(!useSetting);
